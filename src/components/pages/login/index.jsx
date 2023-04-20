@@ -1,10 +1,12 @@
 import React from "react";
 import { Button, Input } from "../../shared";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { ArrowRight, Lock, UserAlt } from "../../icons";
 import logo from "./../../../assets/logo/CCLogo-Black.png";
 
 function Login() {
+  const navigate = useNavigate()
+
   return (
     <div className="bg-emerald-50 h-[100vh] pt-[10vh]">
       <div className="bg-gray-50 h-[80vh] w-[90%] m-auto flex justify-between px-64 pt-20 gap-8 shadow-md">
@@ -45,6 +47,7 @@ function Login() {
               className="bg-emerald-400 text-white font-semibold py-1 px-3 rounded-md flex items-center gap-1"
               title="Sign In"
               icon={<ArrowRight color="white" size="1.2rem" />}
+              onClick={() => navigate("/projects")}
             />
           </div>
           <hr className="h-[1.5px] w-[90%] bg-gray-200 my-3" />

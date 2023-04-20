@@ -1,4 +1,4 @@
-import GateWay from "./components/routes";
+import GateWay from "./routes/index";
 
 function App() {
   return (
