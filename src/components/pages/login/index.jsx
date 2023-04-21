@@ -23,35 +23,35 @@ function Login() {
         </div>
         <hr className="w-[2px] h-64 bg-gray-200" />
         <div className="flex flex-col gap-3 w-[40%] py-3 ">
-          <div className="relative flex items-center">
+          <div className="relative flex items-center w-[100%] ">
             <UserAlt className="absolute left-2" />
             <Input
               type="text"
               placeholder="Username"
-              className="bg-gray-200 py-1 pl-8 w-[90%] rounded-md"
+              className="bg-gray-200 py-1 pl-8 rounded-md"
             />
           </div>
-          <div className="relative flex items-center">
+          <div className="relative flex items-center w-[100%]">
             <Lock className="absolute left-2" />
             <Input
               type="password"
               placeholder="Password"
-              className="bg-gray-200 py-1 pl-8 w-[90%] rounded-md"
+              className="bg-gray-200 py-1 pl-8 w-[100%] rounded-md"
             />
           </div>
-          <div className="flex gap-20 items-center pt-3">
+          <div className="flex items-center pt-3 justify-between">
             <Link to="#" className="text-emerald-500 text-sm font-semibold">
               Forget password?
             </Link>
             <Button
-              className="bg-emerald-400 text-white font-semibold py-1 px-3 rounded-md flex items-center gap-1"
+              className="bg-emerald-400 text-white font-semibold py-1 px-2 rounded-md flex items-center gap-1"
               title="Sign In"
               icon={<ArrowRight color="white" size="1.2rem" />}
               onClick={() => navigate("/projects")}
             />
           </div>
-          <hr className="h-[1.5px] w-[90%] bg-gray-200 my-3" />
-          <div className="flex items-center w-[90%] justify-center gap-2">
+          <hr className="h-[1.5px] w-[100%] bg-gray-200 my-3" />
+          <div className="flex items-center w-[100%] justify-center gap-2">
             <p className="text-gray-500 text-xs font-semibold">No account yet?</p>
             <Link to="#" className="text-emerald-500 text-sm font-semibold">
               Sign Up
