@@ -34,10 +34,7 @@ function Map({ children, zoom, center }) {
 
   return (
     <MapContext.Provider value={{ map }}>
-      <div
-        ref={mapRef}
-        className="min-w-[600px] min-h-[500px] m-[50px] h-[500px] w-[100%] "
-      >
+      <div ref={mapRef} className="w-[100vw] h-[100vh]">
         {children}
       </div>
     </MapContext.Provider>
