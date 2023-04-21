@@ -1,8 +1,11 @@
 import React from "react";
 import { Button, Header, Input, ProjectCart } from "../../shared";
 import { FillPlusCircle, SearchAlt2 } from "../../icons";
+import { useNavigate } from "react-router-dom";
 
 function Projects() {
+  const navigate = useNavigate()
+
   return (
     <>
       <Header />
@@ -23,6 +26,7 @@ function Projects() {
             className="flex items-center flex-row-reverse bg-emerald-400 text-white font-semibold py-1 px-3 rounded-md gap-1"
             title="New Project"
             icon={<FillPlusCircle size="1.2rem" />}
+            onClick={() => navigate("/create")}
           />
         </div>
         <div className="w-[80%] m-auto flex flex-wrap gap-6">
