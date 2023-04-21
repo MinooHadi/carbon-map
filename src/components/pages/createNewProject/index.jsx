@@ -1,7 +1,21 @@
-import React from "react";
-import { Button, Header, Input } from "../../shared";
+import React, { useState } from "react";
+import {
+  Button,
+  Contorols,
+  FullScreenControl,
+  Header,
+  Input,
+  Layers,
+  Map,
+  TileLayer,
+} from "../../shared";
+import { fromLonLat } from "ol/proj";
+import xyz from "../../../Source/xyz";
 
 function CreateNewProject() {
+  const [center, setCenter] = useState([-94.9065, 38.9884]);
+  const [zoom, setZoom] = useState(9);
+
   return (
     <>
       <Header />
@@ -62,8 +76,33 @@ function CreateNewProject() {
               </select>
               <h1 className="text-lg font-semibold">Data</h1>
               <div className="mt-3">
-                <Button title="Upload" className="bg-gray-300 font-semibold py-1 px-3 rounded-l-md" />
-                <Button title="Draw" className="bg-emerald-400 text-white font-semibold py-1 px-3 rounded-r-md" />
+                <Button
+                  title="Upload"
+                  className="bg-gray-300 font-semibold py-1 px-3 rounded-l-md"
+                />
+                <Button
+                  title="Draw"
+                  className="bg-emerald-400 text-white font-semibold py-1 px-3 rounded-r-md"
+                />
+              </div>
+              <div className="mt-3 flex gap-[2%]">
+                <div className="w-[65%] h-80">
+                  <Map center={fromLonLat(center)} zoom={zoom} className="w-[100%] h-[100%] ">
+                    <Layers>
+                      <TileLayer
+                        source={xyz({
+                          url: "http://mt0.google.com/vt/lyrs=m&hl=en&x={x}&y={y}&z={z}",
+                          maxZoom: 20,
+                        })}
+                        zIndex={0}
+                      />
+                    </Layers>
+                    <Contorols>
+                      <FullScreenControl />
+                    </Contorols>
+                  </Map>
+                </div>
+                <div className="w-[33%] bg-yellow-300"></div>
               </div>
             </div>
           </div>

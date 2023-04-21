@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import MapContext from "./MapContext";
 import * as ol from "ol";
 
-function Map({ children, zoom, center }) {
+function Map({ children, zoom, center, className }) {
   const mapRef = useRef();
   const [map, setMap] = useState(null);
 
@@ -34,7 +34,7 @@ function Map({ children, zoom, center }) {
 
   return (
     <MapContext.Provider value={{ map }}>
-      <div ref={mapRef} className="w-[100vw] h-[100vh]">
+      <div ref={mapRef} className={className}>
         {children}
       </div>
     </MapContext.Provider>
