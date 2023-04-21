@@ -1,8 +1,8 @@
 import React from "react";
 import { Link } from "react-router-dom";
 
-function Map() {
+function Home() {
     return <Link to="/login" >Login page</Link>
 }
 
-export default Map
+export default Home
