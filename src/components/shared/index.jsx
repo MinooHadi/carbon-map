@@ -8,3 +8,4 @@ export { default as TileLayer } from "./layers/TileLayer";
 export { default as VectorLayer } from "./layers/VectorLayer";
 export { default as Contorols } from "./contorols/index";
 export { default as FullScreenControl } from "./contorols/FullScreenControl";
+export { default as DrawItem } from "./drawItem/index";

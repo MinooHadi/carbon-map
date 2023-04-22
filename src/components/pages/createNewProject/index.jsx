@@ -2,6 +2,7 @@ import React, { useContext, useEffect, useRef, useState } from "react";
 import {
   Button,
   Contorols,
+  DrawItem,
   FullScreenControl,
   Header,
   Input,
@@ -32,6 +33,7 @@ function CreateNewProject() {
   const { map } = useContext(MapContext);
   const vectorSource = useRef(vector({ wrapX: false }));
   const drawObj = useRef();
+  const [labels, setLabels] = useState([]);
 
   function getFile(e) {
     setGeojsonObject(`/geojson/${e.target.files[0].name}`);
@@ -44,6 +46,13 @@ function CreateNewProject() {
       type: e.currentTarget.dataset.type,
     });
     map.addInteraction(drawObj.current);
+    drawObj.current.on("drawend", (e) => {
+      const feature = e.feature;
+      const id = Date.now();
+      feature.setId(id);
+      let lable = prompt("enter lable");
+      setLabels([...labels, [lable, id]]);
+    });
   }
 
   return (
@@ -190,7 +199,12 @@ function CreateNewProject() {
                     </Contorols>
                   </Map>
                 </div>
-                <div className="w-[33%] bg-yellow-300"></div>
+                <div className="w-[33%]">
+                  {labels &&
+                    labels.map((item) => (
+                      <DrawItem title={item[0]} dataId={item[1]} />
+                    ))}
+                </div>
               </div>
             </div>
           </div>
