@@ -60,7 +60,8 @@ function CreateNewProject() {
     const featureId = +e.currentTarget.dataset.id;
     const feature = vectorSource.current.getFeatureById(featureId);
     vectorSource.current.removeFeature(feature);
-    setLabels(labels.filter((item) => item[1] !== featureId));
+    delete labels[featureId];
+    setLabels({ ...labels });
   }
 
   useEffect(() => {
