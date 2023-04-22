@@ -33,7 +33,8 @@ function CreateNewProject() {
   const { map } = useContext(MapContext);
   const vectorSource = useRef(vector({ wrapX: false }));
   const drawObj = useRef();
-  const [labels, setLabels] = useState([]);
+  const [labels, setLabels] = useState({});
+  const [state, setState] = useState({});
 
   function getFile(e) {
     setGeojsonObject(`/geojson/${e.target.files[0].name}`);
@@ -50,10 +51,21 @@ function CreateNewProject() {
       const feature = e.feature;
       const id = Date.now();
       feature.setId(id);
-      let lable = prompt("enter lable");
-      setLabels([...labels, [lable, id]]);
+      let label = prompt("enter label");
+      setState({ [id]: label });
     });
   }
+
+  function deleteItem(e) {
+    const featureId = +e.currentTarget.dataset.id;
+    const feature = vectorSource.current.getFeatureById(featureId);
+    vectorSource.current.removeFeature(feature);
+    setLabels(labels.filter((item) => item[1] !== featureId));
+  }
+
+  useEffect(() => {
+    setLabels({ ...labels, ...state });
+  }, [state]);
 
   return (
     <>
@@ -199,11 +211,14 @@ function CreateNewProject() {
                     </Contorols>
                   </Map>
                 </div>
-                <div className="w-[33%]">
-                  {labels &&
-                    labels.map((item) => (
-                      <DrawItem title={item[0]} dataId={item[1]} />
-                    ))}
+                <div className="w-[33%] max-h-80 overflow-y-scroll no-scrollbar">
+                  {Object.entries(labels).map((item) => (
+                    <DrawItem
+                      title={item[1]}
+                      dataId={item[0]}
+                      onClick={deleteItem}
+                    />
+                  ))}
                 </div>
               </div>
             </div>

@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import MapContext from "./components/shared/map/MapContext";
 import GateWay from "./routes/index";
 import * as ol from "ol";
+import "./App.css";
 
 function App() {
   const [map, setMap] = useState(null);
