@@ -11,7 +11,7 @@ import {
 } from "../../shared";
 import { fromLonLat } from "ol/proj";
 import xyz from "../../../Source/xyz";
-import { UserAlt } from "../../icons";
+import { Upload, UserAlt } from "../../icons";
 
 function CreateNewProject() {
   const [center, setCenter] = useState([-94.9065, 38.9884]);
@@ -36,7 +36,11 @@ function CreateNewProject() {
         </div>
         <div className="w-[80%] m-auto flex flex-wrap gap-[2%] pb-12 ">
           <div className="w-[28%] bg-white shadow-lg rounded-lg">
-            <div className="bg-gray-200 h-52 rounded-t-lg"></div>
+            <div className="bg-gray-200 h-52 rounded-t-lg flex flex-col justify-center items-center">
+              <input type="file" id="imgUpload" hidden />
+              <Upload color="white" size="1.5rem"/>
+              <label htmlFor="imgUpload" className="text-white font-semibold">Upload image</label>
+            </div>
             <div className="h-[350px] p-4">
               <div>
                 <Input
@@ -60,7 +64,9 @@ function CreateNewProject() {
                     Project users
                   </label>
                   <select className="border-2 border-gray-300 px-1 rounded-md mb-4">
-                    <option value="" disabled selected> <UserAlt /> Select user</option>
+                    <option value="" disabled selected>
+                      Select user
+                    </option>
                   </select>
                 </div>
               </div>
@@ -78,7 +84,12 @@ function CreateNewProject() {
               <h1 className="text-lg font-semibold">Data</h1>
               <div className="mt-3">
                 <input type="file" id="upload" hidden />
-                <label htmlFor="upload" className="bg-gray-300 font-semibold text-sm py-[4.8px] px-3 rounded-l-md">Upload</label>
+                <label
+                  htmlFor="upload"
+                  className="bg-gray-300 font-semibold text-sm py-[4.8px] px-3 rounded-l-md"
+                >
+                  Upload
+                </label>
                 <Button
                   title="Draw"
                   className="bg-emerald-400 text-white font-semibold py-1 px-3 text-sm rounded-r-md"
@@ -86,7 +97,11 @@ function CreateNewProject() {
               </div>
               <div className="mt-3 flex gap-[2%]">
                 <div className="w-[65%] h-80">
-                  <Map center={fromLonLat(center)} zoom={zoom} className="w-[100%] h-[100%] ">
+                  <Map
+                    center={fromLonLat(center)}
+                    zoom={zoom}
+                    className="w-[100%] h-[100%] "
+                  >
                     <Layers>
                       <TileLayer
                         source={xyz({
