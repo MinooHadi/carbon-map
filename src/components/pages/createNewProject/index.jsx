@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import {
   Button,
   Contorols,
@@ -14,21 +14,36 @@ import { fromLonLat, get } from "ol/proj";
 import xyz from "../../../Source/xyz";
 import vector from "../../../Source/vector";
 import {
-  LocationMarker,
+  MousePointer,
+  OutlineLocationMarker,
   OutlinePolyline,
   ShapePolygon,
   Upload,
 } from "../../icons";
 import GeoJSON from "ol/format/GeoJSON";
+import MapContext from "../../shared/map/MapContext";
+import { Draw } from "ol/interaction";
 
 function CreateNewProject() {
   const [center, setCenter] = useState([-103.9065, 56.9884]);
   const [zoom, setZoom] = useState(5);
   const [geojsonObject, setGeojsonObject] = useState();
   const [showToolbar, setShowToolbar] = useState(false);
+  const { map } = useContext(MapContext);
+  const vectorSource = useRef(vector({ wrapX: false }));
+  const drawObj = useRef();
 
   function getFile(e) {
     setGeojsonObject(`/geojson/${e.target.files[0].name}`);
+  }
+
+  function draw(e) {
+    map.removeInteraction(drawObj.current);
+    drawObj.current = new Draw({
+      source: vectorSource.current,
+      type: e.currentTarget.dataset.type,
+    });
+    map.addInteraction(drawObj.current);
   }
 
   return (
@@ -113,14 +128,34 @@ function CreateNewProject() {
                 />
                 {showToolbar && (
                   <div className="flex ml-5 gap-2">
-                    <div className="w-7 h-7 bg-gray-300 rounded-md flex justify-center items-center">
+                    <div
+                      className="w-7 h-7 bg-gray-300 rounded-md flex justify-center items-center"
+                      data-type="Polygon"
+                      onClick={draw}
+                    >
                       <ShapePolygon />
                     </div>
-                    <div className="w-7 h-7 bg-gray-300 rounded-md flex justify-center items-center">
+                    <div
+                      className="w-7 h-7 bg-gray-300 rounded-md flex justify-center items-center"
+                      data-type="LineString"
+                      onClick={draw}
+                    >
                       <OutlinePolyline />
                     </div>
-                    <div className="w-7 h-7 bg-gray-300 rounded-md flex justify-center items-center">
-                      <LocationMarker />
+                    <div
+                      className="w-7 h-7 bg-gray-300 rounded-md flex justify-center items-center"
+                      data-type="Point"
+                      onClick={draw}
+                    >
+                      <OutlineLocationMarker />
+                    </div>
+                    <div
+                      className="w-7 h-7 bg-gray-300 rounded-md flex justify-center items-center"
+                      onClick={() => map.removeInteraction(drawObj.current)}
+                    >
+                      <MousePointer
+                        onClick={() => map.removeInteraction(drawObj.current)}
+                      />
                     </div>
                   </div>
                 )}
@@ -148,6 +183,7 @@ function CreateNewProject() {
                           })}
                         />
                       )}
+                      <VectorLayer source={vectorSource.current} />
                     </Layers>
                     <Contorols>
                       <FullScreenControl />
