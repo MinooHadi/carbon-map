@@ -11,6 +11,7 @@ import {
 } from "../../shared";
 import { fromLonLat } from "ol/proj";
 import xyz from "../../../Source/xyz";
+import { UserAlt } from "../../icons";
 
 function CreateNewProject() {
   const [center, setCenter] = useState([-94.9065, 38.9884]);
@@ -59,7 +60,7 @@ function CreateNewProject() {
                     Project users
                   </label>
                   <select className="border-2 border-gray-300 px-1 rounded-md mb-4">
-                    <option value="">Select user</option>
+                    <option value="" disabled selected> <UserAlt /> Select user</option>
                   </select>
                 </div>
               </div>
@@ -76,13 +77,11 @@ function CreateNewProject() {
               </select>
               <h1 className="text-lg font-semibold">Data</h1>
               <div className="mt-3">
-                <Button
-                  title="Upload"
-                  className="bg-gray-300 font-semibold py-1 px-3 rounded-l-md"
-                />
+                <input type="file" id="upload" hidden />
+                <label htmlFor="upload" className="bg-gray-300 font-semibold text-sm py-[4.8px] px-3 rounded-l-md">Upload</label>
                 <Button
                   title="Draw"
-                  className="bg-emerald-400 text-white font-semibold py-1 px-3 rounded-r-md"
+                  className="bg-emerald-400 text-white font-semibold py-1 px-3 text-sm rounded-r-md"
                 />
               </div>
               <div className="mt-3 flex gap-[2%]">
