@@ -2,7 +2,11 @@
 module.exports = {
   content: ["./src/**/*.{js,jsx,ts,tsx}"],
   theme: {
-    extend: {},
+    extend: {
+      // backgroundImage: {
+      //   "jungle": "url('./src/assets/image/PL3hpY.jpg')"
+      // }
+    },
   },
   plugins: [],
 };
