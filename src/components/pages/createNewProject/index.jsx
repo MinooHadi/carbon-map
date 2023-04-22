@@ -13,13 +13,19 @@ import {
 import { fromLonLat, get } from "ol/proj";
 import xyz from "../../../Source/xyz";
 import vector from "../../../Source/vector";
-import { Upload } from "../../icons";
+import {
+  LocationMarker,
+  OutlinePolyline,
+  ShapePolygon,
+  Upload,
+} from "../../icons";
 import GeoJSON from "ol/format/GeoJSON";
 
 function CreateNewProject() {
   const [center, setCenter] = useState([-103.9065, 56.9884]);
   const [zoom, setZoom] = useState(5);
   const [geojsonObject, setGeojsonObject] = useState();
+  const [showToolbar, setShowToolbar] = useState(false);
 
   function getFile(e) {
     setGeojsonObject(`/geojson/${e.target.files[0].name}`);
@@ -92,18 +98,32 @@ function CreateNewProject() {
                 <option value="">Germany</option>
               </select>
               <h1 className="text-lg font-semibold">Data</h1>
-              <div className="mt-3">
+              <div className="mt-3 flex items-center">
                 <input type="file" id="upload" hidden onChange={getFile} />
                 <label
                   htmlFor="upload"
-                  className="bg-gray-300 font-semibold text-sm py-[4.8px] px-3 rounded-l-md"
+                  className="bg-gray-300 font-semibold text-sm py-1 px-3 rounded-l-md"
                 >
                   Upload
                 </label>
                 <Button
                   title="Draw"
                   className="bg-emerald-400 text-white font-semibold py-1 px-3 text-sm rounded-r-md"
+                  onClick={() => setShowToolbar(!showToolbar)}
                 />
+                {showToolbar && (
+                  <div className="flex ml-5 gap-2">
+                    <div className="w-7 h-7 bg-gray-300 rounded-md flex justify-center items-center">
+                      <ShapePolygon />
+                    </div>
+                    <div className="w-7 h-7 bg-gray-300 rounded-md flex justify-center items-center">
+                      <OutlinePolyline />
+                    </div>
+                    <div className="w-7 h-7 bg-gray-300 rounded-md flex justify-center items-center">
+                      <LocationMarker />
+                    </div>
+                  </div>
+                )}
               </div>
               <div className="mt-3 flex gap-[2%]">
                 <div className="w-[65%] h-80">
