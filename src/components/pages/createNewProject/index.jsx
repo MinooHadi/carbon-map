@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Button,
   Contorols,
@@ -8,14 +8,22 @@ import {
   Layers,
   Map,
   TileLayer,
+  VectorLayer,
 } from "../../shared";
-import { fromLonLat } from "ol/proj";
+import { fromLonLat, get } from "ol/proj";
 import xyz from "../../../Source/xyz";
-import { Upload, UserAlt } from "../../icons";
+import vector from "../../../Source/vector";
+import { Upload } from "../../icons";
+import GeoJSON from "ol/format/GeoJSON";
 
 function CreateNewProject() {
-  const [center, setCenter] = useState([-94.9065, 38.9884]);
-  const [zoom, setZoom] = useState(9);
+  const [center, setCenter] = useState([-103.9065, 56.9884]);
+  const [zoom, setZoom] = useState(5);
+  const [geojsonObject, setGeojsonObject] = useState();
+
+  function getFile(e) {
+    setGeojsonObject(`/geojson/${e.target.files[0].name}`);
+  }
 
   return (
     <>
@@ -38,8 +46,10 @@ function CreateNewProject() {
           <div className="w-[28%] bg-white shadow-lg rounded-lg">
             <div className="bg-gray-200 h-52 rounded-t-lg flex flex-col justify-center items-center">
               <input type="file" id="imgUpload" hidden />
-              <Upload color="white" size="1.5rem"/>
-              <label htmlFor="imgUpload" className="text-white font-semibold">Upload image</label>
+              <Upload color="white" size="1.5rem" />
+              <label htmlFor="imgUpload" className="text-white font-semibold">
+                Upload image
+              </label>
             </div>
             <div className="h-[350px] p-4">
               <div>
@@ -83,7 +93,7 @@ function CreateNewProject() {
               </select>
               <h1 className="text-lg font-semibold">Data</h1>
               <div className="mt-3">
-                <input type="file" id="upload" hidden />
+                <input type="file" id="upload" hidden onChange={getFile} />
                 <label
                   htmlFor="upload"
                   className="bg-gray-300 font-semibold text-sm py-[4.8px] px-3 rounded-l-md"
@@ -110,6 +120,14 @@ function CreateNewProject() {
                         })}
                         zIndex={0}
                       />
+                      {geojsonObject && (
+                        <VectorLayer
+                          source={vector({
+                            format: new GeoJSON(),
+                            url: geojsonObject,
+                          })}
+                        />
+                      )}
                     </Layers>
                     <Contorols>
                       <FullScreenControl />

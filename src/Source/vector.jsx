@@ -1,8 +1,9 @@
-import { vector as VectorSource } from "ol/source";
+import { Vector as VectorSource } from "ol/source";
 
-function vector({ features }) {
+function vector({ url, format }) {
   return new VectorSource({
-    features,
+    url,
+    format,
   });
 }
 
