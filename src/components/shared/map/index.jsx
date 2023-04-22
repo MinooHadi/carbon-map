@@ -1,24 +1,20 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import MapContext from "./MapContext";
 import * as ol from "ol";
 
 function Map({ children, zoom, center, className }) {
+  const { map } = useContext(MapContext);
   const mapRef = useRef();
-  const [map, setMap] = useState(null);
 
   // on component mount
   useEffect(() => {
-    let options = {
-      view: new ol.View({ zoom, center }),
-      layers: [],
-      controls: [],
-      overlays: [],
-    };
-    let mapObject = new ol.Map(options);
-    mapObject.setTarget(mapRef.current);
-    setMap(mapObject);
-    return () => mapObject.setTarget(undefined);
-  }, []);
+    console.log(map);
+    if (!map) return;
+    map.setView(new ol.View({ zoom, center }));
+    
+    // map.setProperties({ options });
+    map.setTarget(mapRef.current);
+  }, [map]);
 
   // zoom change handler
   useEffect(() => {
@@ -33,11 +29,9 @@ function Map({ children, zoom, center, className }) {
   }, [center]);
 
   return (
-    <MapContext.Provider value={{ map }}>
-      <div ref={mapRef} className={className}>
-        {children}
-      </div>
-    </MapContext.Provider>
+    <div ref={mapRef} className={className}>
+      {children}
+    </div>
   );
 }
 
