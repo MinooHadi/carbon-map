@@ -40,6 +40,7 @@ function CreateNewProject() {
 
   const [labels, setLabels] = useState({});
   const [state, setState] = useState({});
+  const formRef = useRef();
 
   const xyzSource = useMemo(() => {
     console.log("create xyz source");
@@ -93,6 +94,14 @@ function CreateNewProject() {
     setLabels({ ...labels, ...state });
   }, [state]);
 
+  function createProject() {
+    const data = new FormData(formRef.current);
+    fetch("http://192.168.1.102:5000/project", {
+      method: "POST",
+      body: data,
+    }).then((res) => console.log(res.status));
+  }
+
   return (
     <>
       <Header />
@@ -107,21 +116,23 @@ function CreateNewProject() {
             <Button
               className="bg-emerald-400 text-white font-semibold py-1 px-3 rounded-md"
               title="Create project"
+              onClick={createProject}
             />
           </div>
         </div>
         <div className="w-[80%] m-auto flex flex-wrap gap-[2%] pb-12 ">
           <div className="w-[28%] bg-white shadow-lg rounded-lg">
-            <div className="bg-gray-200 h-52 rounded-t-lg flex flex-col justify-center items-center">
-              <input type="file" id="imgUpload" hidden />
-              <Upload color="white" size="1.5rem" />
-              <label htmlFor="imgUpload" className="text-white font-semibold">
-                Upload image
-              </label>
-            </div>
-            <div className="h-[350px] p-4">
-              <div>
+            <form id="form" ref={formRef}>
+              <div className="bg-gray-200 h-52 rounded-t-lg flex flex-col justify-center items-center">
+                <input type="file" id="imgUpload" hidden name="thumbnail" />
+                <Upload color="white" size="1.5rem" />
+                <label htmlFor="imgUpload" className="text-white font-semibold">
+                  Upload image
+                </label>
+              </div>
+              <div className="p-[2%]">
                 <Input
+                  name="name"
                   lable="Name"
                   type="text"
                   className="border-2 border-gray-300 px-1 rounded-md mb-4"
@@ -131,11 +142,14 @@ function CreateNewProject() {
                   Description
                 </label>
                 <textarea
+                  name="description"
                   className="border-2 border-gray-300 rounded-md w-[100%] px-1 mt-1 "
                   placeholder="Short description"
                 />
               </div>
-              <div className="mt-3">
+            </form>
+
+            {/* <div className="mt-3">
                 <h1 className="font-semibold text-lg mb-2">Users</h1>
                 <div className="flex flex-col">
                   <label className="text-sm font-medium text-gray-500 mb-1">
@@ -147,8 +161,7 @@ function CreateNewProject() {
                     </option>
                   </select>
                 </div>
-              </div>
-            </div>
+              </div> */}
           </div>
           <div className="w-[70%] bg-white p-5 shadow-lg rounded-lg">
             <h1 className="text-lg font-semibold">Province</h1>
@@ -156,18 +169,35 @@ function CreateNewProject() {
               <label className="text-sm font-medium text-gray-500 mb-1">
                 Choose country
               </label>
-              <select className="border-2 border-gray-300 px-1 rounded-md mb-2">
-                <option value="">Germany</option>
+              <select
+                className="border-2 border-gray-300 px-1 rounded-md mb-2"
+                form="form"
+                name="country"
+              >
+                <option value=""></option>
+                <option value="USA">USA</option>
               </select>
               <label className="text-sm font-medium text-gray-500 mb-1">
                 Choose the most accurate address
               </label>
-              <select className="border-2 border-gray-300 px-1 rounded-md mb-2">
-                <option value="">Germany</option>
+              <select
+                className="border-2 border-gray-300 px-1 rounded-md mb-2"
+                form="form"
+                name="province"
+              >
+                <option value=""></option>
+                <option value="USA">USA</option>
               </select>
               <h1 className="text-lg font-semibold">Data</h1>
               <div className="mt-1 flex items-center">
-                <input type="file" id="upload" hidden onChange={getFile} />
+                <input
+                  type="file"
+                  id="upload"
+                  hidden
+                  onChange={getFile}
+                  form="form"
+                  name="geo_data_file"
+                />
                 <label
                   htmlFor="upload"
                   className="bg-gray-300 font-semibold text-sm py-1 px-3 rounded-l-md"
@@ -214,7 +244,7 @@ function CreateNewProject() {
                 )}
               </div>
               <div className="mt-3 flex gap-[2%]">
-                <DragAndDrop setState={setGeojsonObject} >
+                <DragAndDrop setState={setGeojsonObject}>
                   <Map
                     center={fromLonLat(center)}
                     zoom={zoom}
@@ -229,9 +259,7 @@ function CreateNewProject() {
                         zIndex={0}
                       />
                       {geojsonObject && (
-                        <VectorLayer
-                          source={vectorSource.current}
-                        />
+                        <VectorLayer source={vectorSource.current} />
                       )}
                       <VectorLayer source={drawSource.current} />
                     </Layers>
