@@ -127,15 +127,21 @@ function CreateNewProject() {
           </div>
           <div className="w-[70%] bg-white p-5 shadow-lg rounded-lg">
             <h1 className="text-lg font-semibold">Province</h1>
-            <div className="flex flex-col mt-5">
+            <div className="flex flex-col mt-1">
+            <label className="text-sm font-medium text-gray-500 mb-1">
+                Choose country
+              </label>
+              <select className="border-2 border-gray-300 px-1 rounded-md mb-2">
+                <option value="">Germany</option>
+              </select>
               <label className="text-sm font-medium text-gray-500 mb-1">
                 Choose the most accurate address
               </label>
-              <select className="border-2 border-gray-300 px-1 rounded-md mb-4">
+              <select className="border-2 border-gray-300 px-1 rounded-md mb-2">
                 <option value="">Germany</option>
               </select>
               <h1 className="text-lg font-semibold">Data</h1>
-              <div className="mt-3 flex items-center">
+              <div className="mt-1 flex items-center">
                 <input type="file" id="upload" hidden onChange={getFile} />
                 <label
                   htmlFor="upload"
@@ -183,7 +189,7 @@ function CreateNewProject() {
                 )}
               </div>
               <div className="mt-3 flex gap-[2%]">
-                <div className="w-[65%] h-80">
+                <div className="w-[65%] h-72">
                   <Map
                     center={fromLonLat(center)}
                     zoom={zoom}
@@ -212,7 +218,7 @@ function CreateNewProject() {
                     </Contorols>
                   </Map>
                 </div>
-                <div className="w-[33%] max-h-80 overflow-y-scroll no-scrollbar">
+                <div className="w-[33%] max-h-72 overflow-y-scroll no-scrollbar">
                   {Object.entries(labels).map((item) => (
                     <DrawItem
                       title={item[1]}
