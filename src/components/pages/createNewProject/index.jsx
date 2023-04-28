@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useRef, useState } from "react";
+import React, { useContext, useEffect, useMemo, useRef, useState } from "react";
 import {
   Button,
   Contorols,
@@ -25,6 +25,8 @@ import {
 import GeoJSON from "ol/format/GeoJSON";
 import MapContext from "../../shared/map/MapContext";
 import { Draw } from "ol/interaction";
+import { Vector as VectorSource } from "ol/source";
+
 
 function CreateNewProject() {
   const [center, setCenter] = useState([-103.9065, 56.9884]);
@@ -32,19 +34,44 @@ function CreateNewProject() {
   const [geojsonObject, setGeojsonObject] = useState();
   const [showToolbar, setShowToolbar] = useState(false);
   const { map } = useContext(MapContext);
-  const vectorSource = useRef(vector({ wrapX: false }));
+  
+  const drawSource = useRef(vector({ wrapX: false }));
   const drawObj = useRef();
+  const vectorSource = useRef(new VectorSource());
+
   const [labels, setLabels] = useState({});
   const [state, setState] = useState({});
 
-  function getFile(e) {
-    setGeojsonObject(`/geojson/${e.target.files[0].name}`);
+  const xyzSource = useMemo(() => {
+    console.log('create xyz source');
+    return xyz({
+      url: "http://mt0.google.com/vt/lyrs=m&hl=en&x={x}&y={y}&z={z}",
+      maxZoom: 20,
+    })
+  }, []);
+
+  useEffect(() => {
+    if(!geojsonObject) return
+
+    vectorSource.current.addFeatures(
+      new GeoJSON({
+        featureProjection: 'EPSG:3857'
+      }).readFeatures(geojsonObject)
+    );
+  }, [geojsonObject]);
+  
+  async function getFile(e) {
+    const res = await fetch(`/geojson/${e.target.files[0].name}`);
+    if(res.status == 200) {
+      const data = await res.json();
+      setGeojsonObject(data) 
+    }
   }
 
   function draw(e) {
     map.removeInteraction(drawObj.current);
     drawObj.current = new Draw({
-      source: vectorSource.current,
+      source: drawSource.current,
       type: e.currentTarget.dataset.type,
     });
     map.addInteraction(drawObj.current);
@@ -59,8 +86,8 @@ function CreateNewProject() {
 
   function deleteItem(e) {
     const featureId = +e.currentTarget.dataset.id;
-    const feature = vectorSource.current.getFeatureById(featureId);
-    vectorSource.current.removeFeature(feature);
+    const feature = drawSource.current.getFeatureById(featureId);
+    drawSource.current.removeFeature(feature);
     delete labels[featureId];
     setLabels({ ...labels });
   }
@@ -198,21 +225,13 @@ function CreateNewProject() {
                   >
                     <Layers>
                       <TileLayer
-                        source={xyz({
-                          url: "http://mt0.google.com/vt/lyrs=m&hl=en&x={x}&y={y}&z={z}",
-                          maxZoom: 20,
-                        })}
+                        source={xyzSource}
                         zIndex={0}
                       />
-                      {geojsonObject && (
-                        <VectorLayer
-                          source={vector({
-                            format: new GeoJSON(),
-                            url: geojsonObject,
-                          })}
-                        />
-                      )}
-                      <VectorLayer source={vectorSource.current} />
+                      <VectorLayer
+                        source={vectorSource.current}
+                      />
+                      <VectorLayer source={drawSource.current} />
                     </Layers>
                     <Contorols>
                       <FullScreenControl />

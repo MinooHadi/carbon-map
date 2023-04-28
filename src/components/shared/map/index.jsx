@@ -8,7 +8,6 @@ function Map({ children, zoom, center, className }) {
 
   // on component mount
   useEffect(() => {
-    console.log(map);
     if (!map) return;
     map.setView(new ol.View({ zoom, center }));
     
