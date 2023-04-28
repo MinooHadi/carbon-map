@@ -214,28 +214,7 @@ function CreateNewProject() {
                 )}
               </div>
               <div className="mt-3 flex gap-[2%]">
-                {/* <div className="w-[65%] h-72">
-                  <Map
-                    center={fromLonLat(center)}
-                    zoom={zoom}
-                    className="w-[100%] h-[100%] "
-                  >
-                    <Layers>
-                      <TileLayer
-                        source={xyzSource}
-                        zIndex={0}
-                      />
-                      <VectorLayer
-                        source={vectorSource.current}
-                      />
-                      <VectorLayer source={drawSource.current} />
-                    </Layers>
-                    <Contorols>
-                      <FullScreenControl />
-                    </Contorols>
-                  </Map>
-                </div> */}
-                <DragAndDrop>
+                <DragAndDrop setState={setGeojsonObject} >
                   <Map
                     center={fromLonLat(center)}
                     zoom={zoom}

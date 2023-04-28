@@ -22,7 +22,7 @@ function DragAndDrop(props) {
   function handleDrop(e) {
     e.preventDefault();
     e.stopPropagation();
-    console.log("Drop");
+    e.dataTransfer.files[0].text().then((data) => props.setState(JSON.parse(data)));
   }
 
   return (
@@ -33,7 +33,7 @@ function DragAndDrop(props) {
       onDragEnter={(e) => handleDragEnter(e)}
       onDragLeave={(e) => handleDragLeave(e)}
     >
-        {props.children}
+      {props.children}
     </div>
   );
 }
