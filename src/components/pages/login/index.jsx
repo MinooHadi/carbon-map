@@ -17,6 +17,7 @@ function Login() {
         email: emailInp,
         password: passwordInp,
       }),
+      credentials: "include",
     }).then((res) => {
       if (res.status === 200) {
         navigate("/projects");
