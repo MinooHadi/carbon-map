@@ -2,6 +2,7 @@ import React, { useContext, useEffect, useRef, useState } from "react";
 import {
   Button,
   Contorols,
+  DragAndDrop,
   DrawItem,
   FullScreenControl,
   Header,
@@ -128,7 +129,7 @@ function CreateNewProject() {
           <div className="w-[70%] bg-white p-5 shadow-lg rounded-lg">
             <h1 className="text-lg font-semibold">Province</h1>
             <div className="flex flex-col mt-1">
-            <label className="text-sm font-medium text-gray-500 mb-1">
+              <label className="text-sm font-medium text-gray-500 mb-1">
                 Choose country
               </label>
               <select className="border-2 border-gray-300 px-1 rounded-md mb-2">
@@ -189,7 +190,7 @@ function CreateNewProject() {
                 )}
               </div>
               <div className="mt-3 flex gap-[2%]">
-                <div className="w-[65%] h-72">
+                {/* <div className="w-[65%] h-72">
                   <Map
                     center={fromLonLat(center)}
                     zoom={zoom}
@@ -217,7 +218,36 @@ function CreateNewProject() {
                       <FullScreenControl />
                     </Contorols>
                   </Map>
-                </div>
+                </div> */}
+                <DragAndDrop>
+                  <Map
+                    center={fromLonLat(center)}
+                    zoom={zoom}
+                    className="w-[100%] h-[100%] "
+                  >
+                    <Layers>
+                      <TileLayer
+                        source={xyz({
+                          url: "http://mt0.google.com/vt/lyrs=m&hl=en&x={x}&y={y}&z={z}",
+                          maxZoom: 20,
+                        })}
+                        zIndex={0}
+                      />
+                      {geojsonObject && (
+                        <VectorLayer
+                          source={vector({
+                            format: new GeoJSON(),
+                            url: geojsonObject,
+                          })}
+                        />
+                      )}
+                      <VectorLayer source={vectorSource.current} />
+                    </Layers>
+                    <Contorols>
+                      <FullScreenControl />
+                    </Contorols>
+                  </Map>
+                </DragAndDrop>
                 <div className="w-[33%] max-h-72 overflow-y-scroll no-scrollbar">
                   {Object.entries(labels).map((item) => (
                     <DrawItem
