@@ -27,14 +27,13 @@ import MapContext from "../../shared/map/MapContext";
 import { Draw } from "ol/interaction";
 import { Vector as VectorSource } from "ol/source";
 
-
 function CreateNewProject() {
   const [center, setCenter] = useState([-103.9065, 56.9884]);
   const [zoom, setZoom] = useState(5);
   const [geojsonObject, setGeojsonObject] = useState();
   const [showToolbar, setShowToolbar] = useState(false);
   const { map } = useContext(MapContext);
-  
+
   const drawSource = useRef(vector({ wrapX: false }));
   const drawObj = useRef();
   const vectorSource = useRef(new VectorSource());
@@ -43,29 +42,27 @@ function CreateNewProject() {
   const [state, setState] = useState({});
 
   const xyzSource = useMemo(() => {
-    console.log('create xyz source');
+    console.log("create xyz source");
     return xyz({
       url: "http://mt0.google.com/vt/lyrs=m&hl=en&x={x}&y={y}&z={z}",
       maxZoom: 20,
-    })
+    });
   }, []);
 
   useEffect(() => {
-    if(!geojsonObject) return
+    if (!geojsonObject) return;
 
     vectorSource.current.addFeatures(
       new GeoJSON({
-        featureProjection: 'EPSG:3857'
+        featureProjection: "EPSG:3857",
       }).readFeatures(geojsonObject)
     );
   }, [geojsonObject]);
-  
+
   async function getFile(e) {
-    const res = await fetch(`/geojson/${e.target.files[0].name}`);
-    if(res.status == 200) {
-      const data = await res.json();
-      setGeojsonObject(data) 
-    }
+    e.target.files[0].text().then((data) => {
+      setGeojsonObject(JSON.parse(data));
+    });
   }
 
   function draw(e) {
@@ -254,13 +251,10 @@ function CreateNewProject() {
                       />
                       {geojsonObject && (
                         <VectorLayer
-                          source={vector({
-                            format: new GeoJSON(),
-                            url: geojsonObject,
-                          })}
+                          source={vectorSource.current}
                         />
                       )}
-                      <VectorLayer source={vectorSource.current} />
+                      <VectorLayer source={drawSource.current} />
                     </Layers>
                     <Contorols>
                       <FullScreenControl />
