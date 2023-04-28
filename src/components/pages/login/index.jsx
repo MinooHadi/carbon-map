@@ -1,19 +1,38 @@
-import React from "react";
+import React, { useState } from "react";
 import { Button, Input } from "../../shared";
 import { Link, useNavigate } from "react-router-dom";
 import { ArrowRight, Lock, UserAlt } from "../../icons";
 import logo from "./../../../assets/logo/CCLogo-Black.png";
-import jungle from "./../../../assets/image/PL3hpY.jpg"
+import jungle from "./../../../assets/image/PL3hpY.jpg";
 
 function Login() {
   const navigate = useNavigate();
+  const [emailInp, setEmailInp] = useState();
+  const [passwordInp, setPasswordInp] = useState();
+
+  function signIn() {
+    fetch("http://192.168.1.102:5000/api/login", {
+      method: "POST",
+      body: JSON.stringify({
+        email: emailInp,
+        password: passwordInp,
+      }),
+    }).then((res) => {
+      if (res.status === 200) {
+        navigate("/projects");
+      } else {
+        alert("Invalid credential");
+      }
+    });
+  }
 
   return (
     <div className="bg-emerald-50 h-[100vh] pt-[10vh]">
-      <div
-        className="bg-gray-50 h-[80vh] w-[90%] m-auto flex justify-between px-64 pt-20 gap-8 shadow-md relative"
-      >
-        <img src={jungle} className="absolute top-0 left-0 h-[100%] w-[100%] opacity-20 object-cover" />
+      <div className="bg-gray-50 h-[80vh] w-[90%] m-auto flex justify-between px-64 pt-20 gap-8 shadow-md relative">
+        <img
+          src={jungle}
+          className="absolute top-0 left-0 h-[100%] w-[100%] opacity-20 object-cover"
+        />
         <div className="w-[60%] py-3 z-10 ">
           <div className="flex items-center">
             <img src={logo} className="w-12" />
@@ -33,9 +52,10 @@ function Login() {
           <div className="relative flex items-center w-[100%] ">
             <UserAlt className="absolute left-2" />
             <Input
-              type="text"
-              placeholder="Username"
+              type="email"
+              placeholder="Email"
               className="bg-gray-200 py-1 pl-8 rounded-md"
+              onChange={(e) => setEmailInp(e.target.value)}
             />
           </div>
           <div className="relative flex items-center w-[100%]">
@@ -44,6 +64,7 @@ function Login() {
               type="password"
               placeholder="Password"
               className="bg-gray-200 py-1 pl-8 w-[100%] rounded-md"
+              onChange={(e) => setPasswordInp(e.target.value)}
             />
           </div>
           <div className="flex items-center pt-3 justify-between">
@@ -54,7 +75,7 @@ function Login() {
               className="bg-emerald-400 text-white font-semibold py-1 px-2 rounded-md flex items-center gap-1"
               title="Sign In"
               icon={<ArrowRight color="white" size="1.2rem" />}
-              onClick={() => navigate("/projects")}
+              onClick={signIn}
             />
           </div>
           <hr className="h-[3px] w-[100%] bg-gray-600 my-3" />
