@@ -19,7 +19,8 @@ function Projects() {
       <div className="bg-gray-50">
         <div className="w-[80%] m-auto py-6 flex justify-between items-center mb-3">
           <h1 className="text-xl font-semibold">
-            Projects <span className="text-gray-400">5</span>
+            Projects{" "}
+            <span className="text-gray-400"> {projectsList.length} </span>
           </h1>
           <div className="relative flex items-center">
             <SearchAlt2 className="absolute left-2" size="1.2rem" />
@@ -44,7 +45,11 @@ function Projects() {
                 id={item.id}
                 thumbnail={item.thumbnail}
                 name={item.name}
-                description={item.description}
+                description={
+                  item.description.length > 2000
+                    ? item.description.substring(0, 2000)  +  "..."
+                    : item.description
+                }
                 createdAt={
                   new Date(item.created_at).toISOString().split("T")[0]
                 }

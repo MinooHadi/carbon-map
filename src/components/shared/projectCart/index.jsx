@@ -1,5 +1,4 @@
 import React from "react";
-import image from "./../../../assets/image/JungleValley-22x32-boreal-preview.webp";
 import flag from "./../../../assets/image/download.png";
 
 function ProjectCart(props) {
@@ -9,7 +8,7 @@ function ProjectCart(props) {
       <img src={`http://192.168.1.102:5000/${props.thumbnail}`} className="w-full h-[60%] object-scale-cover rounded-t-xl" />
       <div className="py-4 px-6">
         <h1 className="text-xl font-bold pb-2"> {props.name} </h1>
-        <p className="text-sm font-semibold text-gray-700 pb-4">
+        <p className="text-sm font-semibold text-gray-700 pb-4 truncate">
           {props.description}
         </p>
         <div className="flex justify-between text-xs font-bold text-gray-400">
