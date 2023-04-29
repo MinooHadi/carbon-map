@@ -1,7 +1,21 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
+import { useParams, useSearchParams } from "react-router-dom";
 
 function ProjectDetailPage() {
-  return <h1>hello</h1>;
+  const params = useParams();
+  const [detail, setDetail] = useState([]);
+
+  useEffect(() => {
+    fetch(`http://192.168.1.102:5000/api/projects/${params.id}`, {
+      method: "GET",
+    })
+      .then((res) => res.json())
+      .then((data) => setDetail(data));
+  }, []);
+
+  return <div>
+    
+  </div>;
 }
 
 export default ProjectDetailPage;
