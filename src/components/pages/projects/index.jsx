@@ -1,10 +1,17 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Button, Header, Input, ProjectCart } from "../../shared";
 import { FillPlusCircle, SearchAlt2 } from "../../icons";
 import { useNavigate } from "react-router-dom";
 
 function Projects() {
-  const navigate = useNavigate()
+  const navigate = useNavigate();
+  const [projectsList, setProjectsList] = useState([]);
+
+  useEffect(() => {
+    fetch("http://192.168.1.102:5000/api/projects", { method: "GET" })
+      .then((res) => res.json())
+      .then((data) => setProjectsList(data));
+  }, []);
 
   return (
     <>
@@ -30,11 +37,18 @@ function Projects() {
           />
         </div>
         <div className="w-[80%] m-auto flex flex-wrap gap-6">
-          <ProjectCart />
-          <ProjectCart />
-          <ProjectCart />
-          <ProjectCart />
-          <ProjectCart />
+          {projectsList.map((item) => {
+            console.log(item);
+            return (
+              <ProjectCart
+                id={item.id}
+                thumbnail={item.thumbnail}
+                name={item.name}
+                description={item.description}
+                createdAt={item.created_at}
+              />
+            );
+          })}
         </div>
       </div>
     </>
