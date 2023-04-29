@@ -2,9 +2,8 @@ import React from "react";
 import flag from "./../../../assets/image/download.png";
 
 function ProjectCart(props) {
-  console.log(props);
   return (
-    <div className="w-[32%] bg-white rounded-xl shadow-lg" data-id={props.id} >
+    <div className="w-[32%] bg-white rounded-xl shadow-lg" data-id={props.id} onClick={props.onClick} >
       <img src={`http://192.168.1.102:5000/${props.thumbnail}`} className="w-full h-[60%] object-scale-cover rounded-t-xl" />
       <div className="py-4 px-6">
         <h1 className="text-xl font-bold pb-2"> {props.name} </h1>

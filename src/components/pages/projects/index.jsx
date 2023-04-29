@@ -39,19 +39,17 @@ function Projects() {
         </div>
         <div className="w-[80%] m-auto flex flex-wrap gap-6">
           {projectsList.map((item) => {
-            console.log(item);
             return (
               <ProjectCart
                 id={item.id}
                 thumbnail={item.thumbnail}
                 name={item.name}
-                description={
-                  item.description.length > 2000
-                    ? item.description.substring(0, 2000)  +  "..."
-                    : item.description
-                }
+                description={item.description}
                 createdAt={
                   new Date(item.created_at).toISOString().split("T")[0]
+                }
+                onClick={(e) =>
+                  navigate(`/detail/${e.currentTarget.dataset.id}`)
                 }
               />
             );

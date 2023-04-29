@@ -43,7 +43,6 @@ function CreateNewProject() {
   const formRef = useRef();
 
   const xyzSource = useMemo(() => {
-    console.log("create xyz source");
     return xyz({
       url: "http://mt0.google.com/vt/lyrs=m&hl=en&x={x}&y={y}&z={z}",
       maxZoom: 20,
