@@ -33,6 +33,7 @@ function CreateNewProject() {
   const [geojsonObject, setGeojsonObject] = useState();
   const [showToolbar, setShowToolbar] = useState(false);
   const { map } = useContext(MapContext);
+  const [country, setCountry] = useState([]);
 
   const drawSource = useRef(vector({ wrapX: false }));
   const drawObj = useRef();
@@ -101,6 +102,14 @@ function CreateNewProject() {
       credentials: "include",
     }).then((res) => console.log(res.status));
   }
+
+  useEffect(() => {
+    fetch("http://192.168.1.102:5000/api/countries", {
+      method: "GET",
+    })
+      .then((res) => res.json())
+      .then((data) => setCountry(data));
+  }, []);
 
   return (
     <div className="h-[100vh] ">
@@ -175,7 +184,9 @@ function CreateNewProject() {
                 name="country"
               >
                 <option value=""></option>
-                <option value="USA">USA</option>
+                {country.map((item) => (
+                  <option value={item.code}> {item.name} </option>
+                ))}
               </select>
               <label className="text-sm font-medium text-gray-500 mb-1">
                 Choose the most accurate address
