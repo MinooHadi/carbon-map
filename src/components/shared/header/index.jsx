@@ -4,7 +4,7 @@ import { UserAlt } from "../../icons";
 
 function Header() {
   return (
-    <div className="flex justify-between items-center py-2 px-4">
+    <div className="flex justify-between items-center py-2 px-4 h-[10vh]">
       <div className="flex items-center">
         <img src={logo} className="w-12" />
         <h1 className="text-2xl font-bold">

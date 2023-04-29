@@ -13,9 +13,9 @@ function ProjectDetailPage() {
       .then((data) => setDetail(data));
   }, []);
 
-  return <div>
+  return <>
     
-  </div>;
+  </>;
 }
 
 export default ProjectDetailPage;
