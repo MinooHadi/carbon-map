@@ -45,7 +45,9 @@ function Projects() {
                 thumbnail={item.thumbnail}
                 name={item.name}
                 description={item.description}
-                createdAt={item.created_at}
+                createdAt={
+                  new Date(item.created_at).toISOString().split("T")[0]
+                }
               />
             );
           })}
