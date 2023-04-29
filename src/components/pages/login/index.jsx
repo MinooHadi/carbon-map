@@ -39,7 +39,7 @@ function Login() {
             <img src={logo} className="w-12" />
             <h1 className="text-3xl font-bold">
               {" "}
-              <span className="text-emerald-500">Carbon</span> Map
+              <span className="text-emerald-500">Ccarbon</span> Map
             </h1>
           </div>
           <p className="text-gray-500 font-semibold text-2xl pt-6">

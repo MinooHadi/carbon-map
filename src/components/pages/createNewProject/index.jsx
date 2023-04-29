@@ -12,7 +12,7 @@ import {
   TileLayer,
   VectorLayer,
 } from "../../shared";
-import { fromLonLat, get } from "ol/proj";
+import { fromLonLat } from "ol/proj";
 import xyz from "../../../Source/xyz";
 import vector from "../../../Source/vector";
 import {
@@ -106,7 +106,7 @@ function CreateNewProject() {
     <div className="h-[100vh] ">
       <Header />
       <div className="bg-gray-50 h-[90vh] ">
-        <div className="w-[80%] m-auto py-6 flex justify-between items-center mb-2">
+        <div className="w-[80%] h-[10vh] m-auto py-6 flex justify-between items-center mb-2">
           <h1 className="text-xl font-semibold">New projects</h1>
           <div className="flex gap-3">
             <Button
@@ -120,7 +120,7 @@ function CreateNewProject() {
             />
           </div>
         </div>
-        <div className="w-[80%] m-auto flex flex-wrap gap-[2%] pb-12 ">
+        <div className="w-[80%] h-[75vh] m-auto flex flex-wrap gap-[2%] pb-12 ">
           <div className="w-[28%] bg-white shadow-lg rounded-lg">
             <form id="form" ref={formRef}>
               <div className="bg-gray-200 h-52 rounded-t-lg flex flex-col justify-center items-center">
