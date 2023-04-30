@@ -64,8 +64,23 @@ function CreateNewProject() {
 
   async function getFile(e) {
     e.target.files[0].text().then((data) => {
+      vectorSource.current.clear();
       setGeojsonObject(JSON.parse(data));
     });
+  }
+
+  async function addressSelected(e) {
+    try {
+      const res = await fetch(`http://192.168.1.102:5000/${e.target.value}`, {
+        method: "GET",
+      });
+      if (res.status === 200) {
+        vectorSource.current.clear();
+        setGeojsonObject(await res.json());
+      }
+    } catch (err) {
+      alert(err);
+    }
   }
 
   function draw(e) {
@@ -129,9 +144,10 @@ function CreateNewProject() {
           if (res.status === 200) {
             return res.json();
           }
-          throw ""
+          throw "";
         })
-        .then((data) => setAddresses(data)).catch();
+        .then((data) => setAddresses(data))
+        .catch();
     }
   }, [selectedCountry]);
 
@@ -220,12 +236,11 @@ function CreateNewProject() {
                 className="border-2 border-gray-300 px-1 rounded-md mb-2"
                 form="form"
                 name="province"
+                onChange={addressSelected}
               >
                 <option value=""></option>
                 {Object.entries(addresses).map((item) => (
-                  <option value={item[0]} data-url={item[1]}>
-                    {item[0]}
-                  </option>
+                  <option value={item[1]}>{item[0]}</option>
                 ))}
               </select>
               <h1 className="text-lg font-semibold">Data</h1>
@@ -284,7 +299,12 @@ function CreateNewProject() {
                 )}
               </div>
               <div className="mt-3 flex gap-[2%]">
-                <DragAndDrop setState={setGeojsonObject}>
+                <DragAndDrop
+                  setState={(data) => {
+                    vectorSource.current.clear();
+                    setGeojsonObject(data);
+                  }}
+                >
                   <Map
                     center={fromLonLat(center)}
                     zoom={zoom}
