@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import {
   Button,
@@ -12,9 +12,11 @@ import {
   VectorLayer,
 } from "../../shared";
 import xyz from "../../../Source/xyz";
-import { fromLonLat } from "ol/proj";
+import { fromLonLat, transform } from "ol/proj";
 import vector from "../../../Source/vector";
 import GeoJSON from "ol/format/GeoJSON";
+import VectorSource from "ol/source/Vector";
+import { getCenter } from "ol/extent";
 
 function ProjectDetailPage() {
   const navigate = useNavigate();
@@ -22,6 +24,7 @@ function ProjectDetailPage() {
   const [detail, setDetail] = useState([]);
   const [center, setCenter] = useState([-103.9065, 56.9884]);
   const [zoom, setZoom] = useState(5);
+  const vectorSourceRef = useRef(new VectorSource());
 
   useEffect(() => {
     fetch(`http://192.168.1.102:5000/api/projects/${params.id}`, {
@@ -37,6 +40,29 @@ function ProjectDetailPage() {
       maxZoom: 20,
     });
   }, []);
+
+  useEffect(() => {
+    if (detail) {
+      fetch(`http://192.168.1.102:5000/${detail.geo_data_file}`, {
+        method: "GET",
+      })
+        .then((res) => {
+          if (res.status === 200) {
+            return res.json();
+          }
+        })
+        .then((data) => {
+          vectorSourceRef.current.addFeatures(
+            new GeoJSON({
+              featureProjection: "EPSG:3857",
+            }).readFeatures(data)
+          );
+          let polygonCenter = getCenter(vectorSourceRef.current.getExtent());
+          setCenter(transform(polygonCenter, "EPSG:3857", "EPSG:4326"));
+        });
+      setZoom(4);
+    }
+  }, [detail]);
 
   function deleteProject() {
     fetch(`http://192.168.1.102:5000/api/projects/${params.id}`, {
@@ -91,20 +117,9 @@ function ProjectDetailPage() {
               className="w-[100%] h-[100%] "
             >
               <Layers>
-                <TileLayer
-                  source={xyz({
-                    url: "http://mt0.google.com/vt/lyrs=m&hl=en&x={x}&y={y}&z={z}",
-                    maxZoom: 20,
-                  })}
-                  zIndex={0}
-                />
+                <TileLayer source={xyzSource} zIndex={0} />
                 {detail.geo_data_file && (
-                  <VectorLayer
-                    source={vector({
-                      url: `http://192.168.1.102:5000/${detail.geo_data_file}`,
-                      format: new GeoJSON(),
-                    })}
-                  />
+                  <VectorLayer source={vectorSourceRef.current} />
                 )}
               </Layers>
               <Contorols>
