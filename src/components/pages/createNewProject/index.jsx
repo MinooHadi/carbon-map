@@ -34,6 +34,8 @@ function CreateNewProject() {
   const [showToolbar, setShowToolbar] = useState(false);
   const { map } = useContext(MapContext);
   const [country, setCountry] = useState([]);
+  const [selectedCountry, setSelectedCountry] = useState(undefined);
+  const [addresses, setAddresses] = useState({});
 
   const drawSource = useRef(vector({ wrapX: false }));
   const drawObj = useRef();
@@ -111,6 +113,28 @@ function CreateNewProject() {
       .then((data) => setCountry(data));
   }, []);
 
+  useEffect(() => {
+    if (selectedCountry) {
+      fetch("http://192.168.1.102:5000/api/geo-data/", {
+        method: "POST",
+        body: JSON.stringify({
+          country: selectedCountry,
+        }),
+        credentials: "include",
+        headers: {
+          "content-type": "application/json",
+        },
+      })
+        .then((res) => {
+          if (res.status === 200) {
+            return res.json();
+          }
+          throw ""
+        })
+        .then((data) => setAddresses(data)).catch();
+    }
+  }, [selectedCountry]);
+
   return (
     <div className="h-[100vh] ">
       <Header />
@@ -182,6 +206,7 @@ function CreateNewProject() {
                 className="border-2 border-gray-300 px-1 rounded-md mb-2"
                 form="form"
                 name="country"
+                onChange={(e) => setSelectedCountry(e.target.value)}
               >
                 <option value=""></option>
                 {country.map((item) => (
@@ -197,7 +222,11 @@ function CreateNewProject() {
                 name="province"
               >
                 <option value=""></option>
-                <option value="USA">USA</option>
+                {Object.entries(addresses).map((item) => (
+                  <option value={item[0]} data-url={item[1]}>
+                    {item[0]}
+                  </option>
+                ))}
               </select>
               <h1 className="text-lg font-semibold">Data</h1>
               <div className="mt-1 flex items-center">
