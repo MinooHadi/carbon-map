@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import {
   Button,
   Contorols,
@@ -17,6 +17,7 @@ import vector from "../../../Source/vector";
 import GeoJSON from "ol/format/GeoJSON";
 
 function ProjectDetailPage() {
+  const navigate = useNavigate();
   const params = useParams();
   const [detail, setDetail] = useState([]);
   const [center, setCenter] = useState([-103.9065, 56.9884]);
@@ -37,6 +38,17 @@ function ProjectDetailPage() {
     });
   }, []);
 
+  function deleteProject() {
+    fetch(`http://192.168.1.102:5000/api/projects/${params.id}`, {
+      method: "DELETE",
+      credentials: "include",
+    }).then((res) => {
+      if (res.status === 200) {
+        navigate("/projects");
+      }
+    });
+  }
+
   return (
     <div className=" h-[100vh] ">
       <Header />
@@ -47,6 +59,7 @@ function ProjectDetailPage() {
             <Button
               className="bg-red-500 text-white font-semibold py-1 px-3 rounded-md"
               title="Delete project"
+              onClick={deleteProject}
             />
             <Button
               className="bg-emerald-400 text-white font-semibold py-1 px-3 rounded-md"
