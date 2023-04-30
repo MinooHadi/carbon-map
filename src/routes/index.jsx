@@ -5,6 +5,7 @@ import {
   Home,
   Login,
   ProjectDetailPage,
+  ProjectReport,
   Projects,
 } from "../components/pages";
 
@@ -17,6 +18,7 @@ function GateWay() {
         <Route path="/projects" element={<Projects />} />
         <Route path="/create" element={<CreateNewProject />} />
         <Route path="/detail/:id" element={<ProjectDetailPage />} />
+        <Route path="/report/:id" element={<ProjectReport />} />
       </Routes>
     </BrowserRouter>
   );

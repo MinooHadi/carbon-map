@@ -9,6 +9,7 @@ function Modal(props) {
 
   function handleSendBtn() {
     props.setShowModal(false);
+    navigate("/detail");
   }
 
   return ReactDOM.createPortal(
