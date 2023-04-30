@@ -62,7 +62,6 @@ function CreateNewProject() {
       }).readFeatures(geojsonObject)
     );
     let polygonCenter = getCenter(vectorSource.current.getExtent());
-    console.log(polygonCenter);
     setCenter(transform(polygonCenter, "EPSG:3857", "EPSG:4326"));
   }, [geojsonObject]);
 
