@@ -12,7 +12,7 @@ import {
   TileLayer,
   VectorLayer,
 } from "../../shared";
-import { fromLonLat } from "ol/proj";
+import { fromLonLat, transform } from "ol/proj";
 import xyz from "../../../Source/xyz";
 import vector from "../../../Source/vector";
 import {
@@ -26,6 +26,7 @@ import GeoJSON from "ol/format/GeoJSON";
 import MapContext from "../../shared/map/MapContext";
 import { Draw } from "ol/interaction";
 import { Vector as VectorSource } from "ol/source";
+import { getCenter } from "ol/extent";
 
 function CreateNewProject() {
   const [center, setCenter] = useState([-103.9065, 56.9884]);
@@ -60,6 +61,9 @@ function CreateNewProject() {
         featureProjection: "EPSG:3857",
       }).readFeatures(geojsonObject)
     );
+    let polygonCenter = getCenter(vectorSource.current.getExtent());
+    console.log(polygonCenter);
+    setCenter(transform(polygonCenter, "EPSG:3857", "EPSG:4326"));
   }, [geojsonObject]);
 
   async function getFile(e) {
@@ -311,13 +315,7 @@ function CreateNewProject() {
                     className="w-[100%] h-[100%] "
                   >
                     <Layers>
-                      <TileLayer
-                        source={xyz({
-                          url: "http://mt0.google.com/vt/lyrs=m&hl=en&x={x}&y={y}&z={z}",
-                          maxZoom: 20,
-                        })}
-                        zIndex={0}
-                      />
+                      <TileLayer source={xyzSource} zIndex={0} />
                       {geojsonObject && (
                         <VectorLayer source={vectorSource.current} />
                       )}
