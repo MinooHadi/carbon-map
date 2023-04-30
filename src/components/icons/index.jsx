@@ -9,6 +9,7 @@ import { MdOutlinePolyline } from "react-icons/md";
 import { HiOutlineLocationMarker } from "react-icons/hi";
 import { FiMousePointer } from "react-icons/fi";
 import { FiTrash2 } from "react-icons/fi";
+import { GrFormClose } from "react-icons/gr";
 
 export const UserAlt = FaUserAlt;
 export const Lock = FaLock;
@@ -21,3 +22,4 @@ export const OutlinePolyline = MdOutlinePolyline;
 export const OutlineLocationMarker = HiOutlineLocationMarker;
 export const MousePointer = FiMousePointer;
 export const Trash2 = FiTrash2;
+export const FormClose = GrFormClose;

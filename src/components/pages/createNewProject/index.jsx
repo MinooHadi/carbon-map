@@ -9,6 +9,7 @@ import {
   Input,
   Layers,
   Map,
+  Modal,
   TileLayer,
   VectorLayer,
 } from "../../shared";
@@ -45,6 +46,8 @@ function CreateNewProject() {
   const [labels, setLabels] = useState({});
   const [state, setState] = useState({});
   const formRef = useRef();
+
+  const [showModal, setShowModal] = useState(false);
 
   const xyzSource = useMemo(() => {
     return xyz({
@@ -120,7 +123,11 @@ function CreateNewProject() {
       method: "POST",
       body: data,
       credentials: "include",
-    }).then((res) => console.log(res.status));
+    }).then((res) => {
+      if (res.status === 201) {
+        setShowModal(true);
+      }
+    });
   }
 
   useEffect(() => {
@@ -339,6 +346,7 @@ function CreateNewProject() {
           </div>
         </div>
       </div>
+      {showModal && <Modal setShowModal={setShowModal} />}
     </div>
   );
 }
