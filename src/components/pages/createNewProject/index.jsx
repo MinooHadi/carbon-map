@@ -47,7 +47,7 @@ function CreateNewProject() {
   const [state, setState] = useState({});
   const formRef = useRef();
 
-  const [showModal, setShowModal] = useState(false);
+  const [showModal, setShowModal] = useState();
 
   const xyzSource = useMemo(() => {
     return xyz({
@@ -123,11 +123,16 @@ function CreateNewProject() {
       method: "POST",
       body: data,
       credentials: "include",
-    }).then((res) => {
-      if (res.status === 201) {
-        setShowModal(true);
-      }
-    });
+    })
+      .then((res) => {
+        if (res.status === 201) {
+          return res.json();
+        }
+        throw "";
+      })
+      .then((data) => {
+        setShowModal(data.id);
+      });
   }
 
   useEffect(() => {
@@ -346,7 +351,9 @@ function CreateNewProject() {
           </div>
         </div>
       </div>
-      {showModal && <Modal setShowModal={setShowModal} />}
+      {showModal !== undefined && (
+        <Modal setShowModal={setShowModal} pid={showModal} />
+      )}
     </div>
   );
 }

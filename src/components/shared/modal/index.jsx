@@ -8,8 +8,8 @@ function Modal(props) {
   const navigate = useNavigate();
 
   function handleSendBtn() {
-    props.setShowModal(false);
-    navigate("/detail");
+    props.setShowModal(undefined);
+    navigate(`/detail/${props.pid}`);
   }
 
   return ReactDOM.createPortal(
@@ -17,7 +17,7 @@ function Modal(props) {
       <FormClose
         size="1.2rem"
         className="absolute top-3 right-3"
-        onClick={() => props.setShowModal(false)}
+        onClick={() => props.setShowModal(undefined)}
       />
       <h1 className="text-xl font-semibold mt-2">Query Panel</h1>
       <div className="flex flex-col mt-4">
