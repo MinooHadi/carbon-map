@@ -2,7 +2,7 @@ import React from "react";
 
 function Input(props) {
   return (
-    <div className="flex flex-col w-[100%]">
+    <div className={!props.type === "date" ? "flex flex-col w-[100%]" : "flex flex-row items-center gap-2 w-1/4"}>
       <label className="text-sm font-medium text-gray-500 mb-1">
         {props.lable}
       </label>

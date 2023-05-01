@@ -1,38 +1,46 @@
 import React from "react";
 import ReactDOM from "react-dom";
-import { FormClose } from "../../icons";
+import { FileDownload, FormClose } from "../../icons";
 import Button from "../button";
 import { useNavigate } from "react-router-dom";
+import Input from "../input";
 
 function Modal(props) {
   const navigate = useNavigate();
 
-  function handleSendBtn() {
-    props.setShowModal(undefined);
-    navigate(`/detail/${props.pid}`);
-  }
-
   return ReactDOM.createPortal(
-    <div className="w-[26vw] h-1/2 border-2 bg-white p-5 fixed top-1/4 left-[37vw] ">
-      <FormClose
-        size="1.2rem"
-        className="absolute top-3 right-3"
-        onClick={() => props.setShowModal(undefined)}
-      />
-      <h1 className="text-xl font-semibold mt-2">Query Panel</h1>
-      <div className="flex flex-col mt-4">
-        <label htmlFor="" className="pl-2">
-          Indicator
-        </label>
-        <select name="" id="" className="border-2">
-          <option value="NDVI">NDVI</option>
-        </select>
+    <div className="absolute bottom-0 h-[300px] w-[100%] rounded-t-3xl bg-white p-5">
+      <div className="flex flex-row-reverse items-center justify-between">
+        <div className="flex flex-row-reverse items-center gap-5">
+          <FormClose size="1.2rem" onClick={() => props.setShowModal(false)} />
+        </div>
+        <div className="flex justify-between w-[80%] mt-2 ">
+          <select name="" id="" className="border-2 w-1/4 px-1 ">
+            <option value="">Choose Indicator</option>
+            <option value="Biomass">Biomass</option>
+            <option value="NDVI">NDVI</option>
+          </select>
+          <Input
+            lable="Start Date:"
+            type="date"
+            className="w-[70%] border-2 px-1 "
+          />
+          <Input
+            lable="End Date:"
+            type="date"
+            className=" w-[70%] border-2 px-1 "
+          />
+          <div className="flex gap-2">
+            <Button
+              title="Send"
+              className="bg-emerald-400 text-white px-4 py-1 rounded-md"
+            />
+            <div className="bg-emerald-400 px-2 py-1 rounded-md">
+              <FileDownload size="1.5rem" color="white" />
+            </div>
+          </div>
+        </div>
       </div>
-      <Button
-        title="Send"
-        className="bg-emerald-400 absolute bottom-3 right-3 text-white px-4 py-1 rounded-md"
-        onClick={handleSendBtn}
-      />
     </div>,
     document.getElementById("modal-root")
   );
