@@ -4,6 +4,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { ArrowRight, Lock, UserAlt } from "../../icons";
 import logo from "./../../../assets/logo/CCLogo-Black.png";
 import jungle from "./../../../assets/image/PL3hpY.jpg";
+import { BASE_URL } from "../../../api";
 
 function Login() {
   const navigate = useNavigate();
@@ -11,7 +12,7 @@ function Login() {
   const [passwordInp, setPasswordInp] = useState();
 
   function signIn() {
-    fetch("http://192.168.1.102:5000/api/login", {
+    fetch(`${BASE_URL}/api/login`, {
       method: "POST",
       body: JSON.stringify({
         email: emailInp,
@@ -39,7 +40,7 @@ function Login() {
             <img src={logo} className="w-12" />
             <h1 className="text-3xl font-bold">
               {" "}
-              <span className="text-emerald-500">Ccarbon</span> Map
+              <span className="text-emerald-500">C-Carbon</span> Map
             </h1>
           </div>
           <p className="text-gray-500 font-semibold text-2xl pt-6">

@@ -17,6 +17,7 @@ import vector from "../../../Source/vector";
 import GeoJSON from "ol/format/GeoJSON";
 import VectorSource from "ol/source/Vector";
 import { getCenter } from "ol/extent";
+import { BASE_URL } from "../../../api";
 
 function ProjectDetailPage() {
   const navigate = useNavigate();
@@ -27,7 +28,7 @@ function ProjectDetailPage() {
   const vectorSourceRef = useRef(new VectorSource());
 
   useEffect(() => {
-    fetch(`http://192.168.1.102:5000/api/projects/${params.id}`, {
+    fetch(`${BASE_URL}/api/projects/${params.id}`, {
       method: "GET",
     })
       .then((res) => res.json())
@@ -43,7 +44,7 @@ function ProjectDetailPage() {
 
   useEffect(() => {
     if (detail) {
-      fetch(`http://192.168.1.102:5000/${detail.geo_data_file}`, {
+      fetch(`${BASE_URL}/${detail.geo_data_file}`, {
         method: "GET",
       })
         .then((res) => {
@@ -65,7 +66,7 @@ function ProjectDetailPage() {
   }, [detail]);
 
   function deleteProject() {
-    fetch(`http://192.168.1.102:5000/api/projects/${params.id}`, {
+    fetch(`${BASE_URL}/api/projects/${params.id}`, {
       method: "DELETE",
       credentials: "include",
     }).then((res) => {
@@ -99,7 +100,7 @@ function ProjectDetailPage() {
             <div className="bg-gray-200 h-52 rounded-t-lg flex flex-col justify-center items-center">
               {detail.thumbnail && (
                 <img
-                  src={`http://192.168.1.102:5000/${detail.thumbnail}`}
+                  src={`${BASE_URL}/${detail.thumbnail}`}
                   className="w-[100%] h-[100%] object-cover rounded-t-lg"
                 />
               )}

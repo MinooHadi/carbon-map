@@ -28,6 +28,7 @@ import MapContext from "../../shared/map/MapContext";
 import { Draw } from "ol/interaction";
 import { Vector as VectorSource } from "ol/source";
 import { getCenter } from "ol/extent";
+import { BASE_URL } from "../../../api";
 
 function CreateNewProject() {
   const [center, setCenter] = useState([-103.9065, 56.9884]);
@@ -77,7 +78,7 @@ function CreateNewProject() {
 
   async function addressSelected(e) {
     try {
-      const res = await fetch(`http://192.168.1.102:5000/${e.target.value}`, {
+      const res = await fetch(`${BASE_URL}/${e.target.value}`, {
         method: "GET",
       });
       if (res.status === 200) {
@@ -119,7 +120,7 @@ function CreateNewProject() {
 
   function createProject() {
     const data = new FormData(formRef.current);
-    fetch("http://192.168.1.102:5000/project", {
+    fetch(`${BASE_URL}/project`, {
       method: "POST",
       body: data,
       credentials: "include",
@@ -136,7 +137,7 @@ function CreateNewProject() {
   }
 
   useEffect(() => {
-    fetch("http://192.168.1.102:5000/api/countries", {
+    fetch(`${BASE_URL}/api/countries`, {
       method: "GET",
     })
       .then((res) => res.json())
@@ -145,7 +146,7 @@ function CreateNewProject() {
 
   useEffect(() => {
     if (selectedCountry) {
-      fetch("http://192.168.1.102:5000/api/geo-data/", {
+      fetch(`${BASE_URL}/api/geo-data/`, {
         method: "POST",
         body: JSON.stringify({
           country: selectedCountry,

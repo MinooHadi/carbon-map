@@ -1,5 +1,6 @@
 import React from "react";
 import flag from "./../../../assets/image/download.png";
+import { BASE_URL } from "../../../api";
 
 function ProjectCart(props) {
   return (
@@ -10,7 +11,7 @@ function ProjectCart(props) {
     >
       <div className="w-[100%] h-[60%]">
         <img
-          src={`http://192.168.1.102:5000/${props.thumbnail}`}
+          src={`${BASE_URL}/${props.thumbnail}`}
           className="w-[100%] h-[100%] object-scale-cover rounded-t-xl"
         />
       </div>

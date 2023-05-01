@@ -2,13 +2,14 @@ import React, { useEffect, useState } from "react";
 import { Button, Header, Input, ProjectCart } from "../../shared";
 import { FillPlusCircle, SearchAlt2 } from "../../icons";
 import { useNavigate } from "react-router-dom";
+import { BASE_URL } from "../../../api";
 
 function Projects() {
   const navigate = useNavigate();
   const [projectsList, setProjectsList] = useState([]);
 
   useEffect(() => {
-    fetch("http://192.168.1.102:5000/api/projects", { method: "GET" })
+    fetch(`${BASE_URL}/api/projects`, { method: "GET" })
       .then((res) => res.json())
       .then((data) => setProjectsList(data));
   }, []);
