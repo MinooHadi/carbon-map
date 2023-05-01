@@ -13,7 +13,6 @@ import {
 } from "../../shared";
 import xyz from "../../../Source/xyz";
 import { fromLonLat, transform } from "ol/proj";
-import vector from "../../../Source/vector";
 import GeoJSON from "ol/format/GeoJSON";
 import VectorSource from "ol/source/Vector";
 import { getCenter } from "ol/extent";
