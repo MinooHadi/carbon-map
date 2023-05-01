@@ -29,8 +29,10 @@ import { Draw } from "ol/interaction";
 import { Vector as VectorSource } from "ol/source";
 import { getCenter } from "ol/extent";
 import { BASE_URL } from "../../../api";
+import { useNavigate } from "react-router-dom";
 
 function CreateNewProject() {
+  const navigate = useNavigate();
   const [center, setCenter] = useState([-103.9065, 56.9884]);
   const [zoom, setZoom] = useState(5);
   const [geojsonObject, setGeojsonObject] = useState();
@@ -47,8 +49,6 @@ function CreateNewProject() {
   const [labels, setLabels] = useState({});
   const [state, setState] = useState({});
   const formRef = useRef();
-
-  const [showModal, setShowModal] = useState();
 
   const xyzSource = useMemo(() => {
     return xyz({
@@ -131,9 +131,7 @@ function CreateNewProject() {
         }
         throw "";
       })
-      .then((data) => {
-        setShowModal(data.id);
-      });
+      .then((data) => navigate(`/query?pid=${data.id}`));
   }
 
   useEffect(() => {
@@ -352,9 +350,6 @@ function CreateNewProject() {
           </div>
         </div>
       </div>
-      {showModal !== undefined && (
-        <Modal setShowModal={setShowModal} pid={showModal} />
-      )}
     </div>
   );
 }
