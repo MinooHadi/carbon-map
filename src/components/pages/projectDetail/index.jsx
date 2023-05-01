@@ -90,7 +90,7 @@ function ProjectDetailPage() {
             <Button
               className="bg-emerald-400 text-white font-semibold py-1 px-3 rounded-md"
               title="Report"
-              onClick={() => navigate(`/report/${params.id}`)}
+              onClick={() => navigate(`/query?pid=${params.id}`)}
             />
           </div>
         </div>
