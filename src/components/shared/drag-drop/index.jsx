@@ -19,7 +19,10 @@ function DragAndDrop(props) {
   function handleDrop(e) {
     e.preventDefault();
     e.stopPropagation();
-    e.dataTransfer.files[0].text().then((data) => props.setState(JSON.parse(data)));
+    e.dataTransfer.files[0]
+      .text()
+      .then((data) => props.setState(JSON.parse(data)));
+    props.setDragedFile(e.dataTransfer.files[0]);
   }
 
   return (

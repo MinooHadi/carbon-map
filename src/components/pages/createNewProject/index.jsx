@@ -48,6 +48,7 @@ function CreateNewProject() {
 
   const [labels, setLabels] = useState({});
   const [state, setState] = useState({});
+  const [dragedFile, setDragedFile] = useState();
   const formRef = useRef();
 
   const xyzSource = useMemo(() => {
@@ -120,6 +121,11 @@ function CreateNewProject() {
 
   function createProject() {
     const data = new FormData(formRef.current);
+    if (!data.get("geo_data_file")) {
+      if (geojsonObject && dragedFile) {
+        data.set("geo_data_file_2", dragedFile, dragedFile.name);
+      }
+    }
     fetch(`${BASE_URL}/project`, {
       method: "POST",
       body: data,
@@ -141,6 +147,10 @@ function CreateNewProject() {
       })
       .catch((err) => alert(err.message));
   }
+
+  useEffect(() => {
+    console.log(dragedFile);
+  }, [dragedFile]);
 
   useEffect(() => {
     fetch(`${BASE_URL}/api/countries`, {
@@ -326,6 +336,7 @@ function CreateNewProject() {
                     vectorSource.current.clear();
                     setGeojsonObject(data);
                   }}
+                  setDragedFile={(data) => setDragedFile(data)}
                 >
                   <Map
                     center={fromLonLat(center)}
