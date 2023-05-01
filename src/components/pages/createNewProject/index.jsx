@@ -127,11 +127,19 @@ function CreateNewProject() {
     })
       .then((res) => {
         if (res.status === 201) {
+          formRef.current.reset();
+          setGeojsonObject();
+          vectorSource.current.clear();
           return res.json();
         }
-        throw "";
+        return res.json().then((err) => {
+          throw new Error(err.detail);
+        });
       })
-      .then((data) => navigate(`/query?pid=${data.id}`));
+      .then((data) => {
+        navigate(`/query?pid=${data.id}`);
+      })
+      .catch((err) => alert(err.message));
   }
 
   useEffect(() => {
