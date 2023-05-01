@@ -10,8 +10,8 @@ import { fromLonLat } from "ol/proj";
 import xyz from "../../../Source/xyz";
 
 function Home() {
-  const [center, setCenter] = useState([-94.9065, 38.9884]);
-  const [zoom, setZoom] = useState(9);
+  const [center, setCenter] = useState([-100.9065, 57.9884]);
+  const [zoom, setZoom] = useState(5);
 
   return (
     <div>

@@ -14,8 +14,8 @@ import { OutlineArrowsExpand } from "../../icons";
 
 function ProjectReport() {
   const [params] = useSearchParams();
-  const [center, setCenter] = useState([-94.9065, 38.9884]);
-  const [zoom, setZoom] = useState(9);
+  const [center, setCenter] = useState([-100.9065, 57.9884]);
+  const [zoom, setZoom] = useState(5);
   const [showModal, setShowModal] = useState(true);
 
   return (
