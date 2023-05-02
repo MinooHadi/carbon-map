@@ -42,7 +42,7 @@ function ProjectDetailPage() {
   }, []);
 
   useEffect(() => {
-    if (detail) {
+    if (detail.geo_data_file) {
       fetch(`${BASE_URL}/${detail.geo_data_file}`, {
         method: "GET",
       })

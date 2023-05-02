@@ -23,7 +23,7 @@ import {
   ShapePolygon,
   Upload,
 } from "../../icons";
-import GeoJSON from "ol/format/GeoJSON";
+import { GeoJSON, KML } from "ol/format";
 import MapContext from "../../shared/map/MapContext";
 import { Draw } from "ol/interaction";
 import { Vector as VectorSource } from "ol/source";
@@ -35,7 +35,7 @@ function CreateNewProject() {
   const navigate = useNavigate();
   const [center, setCenter] = useState([-103.9065, 56.9884]);
   const [zoom, setZoom] = useState(5);
-  const [geojsonObject, setGeojsonObject] = useState();
+  const [geoFileObject, setGeoFileObject] = useState();
   const [showToolbar, setShowToolbar] = useState(false);
   const { map } = useContext(MapContext);
   const [country, setCountry] = useState([]);
@@ -58,23 +58,41 @@ function CreateNewProject() {
     });
   }, []);
 
+  useEffect(() => {}, [dragedFile]);
+
   useEffect(() => {
-    if (!geojsonObject) return;
+    if (!geoFileObject) return;
 
     vectorSource.current.addFeatures(
-      new GeoJSON({
+      new geoFileObject.format({
         featureProjection: "EPSG:3857",
-      }).readFeatures(geojsonObject)
+      }).readFeatures(geoFileObject.data)
     );
     let polygonCenter = getCenter(vectorSource.current.getExtent());
     setCenter(transform(polygonCenter, "EPSG:3857", "EPSG:4326"));
-  }, [geojsonObject]);
+  }, [geoFileObject]);
 
   async function getFile(e) {
-    e.target.files[0].text().then((data) => {
-      vectorSource.current.clear();
-      setGeojsonObject(JSON.parse(data));
-    });
+    const fileFormatList = e.target.files[0].name.split(".");
+    const fileFormat = fileFormatList[fileFormatList.length - 1].toLowerCase();
+    switch (fileFormat) {
+      case "geojson": {
+        const data = await e.target.files[0].text();
+        vectorSource.current.clear();
+        setGeoFileObject({ data: JSON.parse(data), format: GeoJSON });
+        return;
+      }
+      case "kml": {
+        const data = await e.target.files[0].text();
+        vectorSource.current.clear();
+        setGeoFileObject({ data: data, format: KML });
+        return;
+      }
+    }
+    // e.target.files[0].text().then((data) => {
+    //   vectorSource.current.clear();
+    //   setGeoFileObject(JSON.parse(data));
+    // });
   }
 
   async function addressSelected(e) {
@@ -84,7 +102,7 @@ function CreateNewProject() {
       });
       if (res.status === 200) {
         vectorSource.current.clear();
-        setGeojsonObject(await res.json());
+        setGeoFileObject(await res.json());
       }
     } catch (err) {
       alert(err);
@@ -119,10 +137,35 @@ function CreateNewProject() {
     setLabels({ ...labels, ...state });
   }, [state]);
 
+  useEffect(() => {
+    async function fn() {
+      if (dragedFile) {
+        const fileFormatList = dragedFile.name.split(".");
+        const fileFormat =
+          fileFormatList[fileFormatList.length - 1].toLowerCase();
+        switch (fileFormat) {
+          case "geojson": {
+            const data = await dragedFile.text();
+            vectorSource.current.clear();
+            setGeoFileObject({ data: JSON.parse(data), format: GeoJSON });
+            return;
+          }
+          case "kml": {
+            const data = await dragedFile.text();
+            vectorSource.current.clear();
+            setGeoFileObject({ data: data, format: KML });
+            return;
+          }
+        }
+      }
+    }
+    fn();
+  }, [dragedFile]);
+
   function createProject() {
     const data = new FormData(formRef.current);
     if (!data.get("geo_data_file").name) {
-      if (geojsonObject && dragedFile) {
+      if (geoFileObject && dragedFile) {
         data.set("geo_data_file", dragedFile);
       } else {
         const drawData = drawSource.current.getFeatures();
@@ -148,7 +191,7 @@ function CreateNewProject() {
       .then((res) => {
         if (res.status === 201) {
           formRef.current.reset();
-          setGeojsonObject();
+          setGeoFileObject();
           vectorSource.current.clear();
           return res.json();
         }
@@ -161,10 +204,6 @@ function CreateNewProject() {
       })
       .catch((err) => alert(err.message));
   }
-
-  useEffect(() => {
-    console.log(dragedFile);
-  }, [dragedFile]);
 
   useEffect(() => {
     fetch(`${BASE_URL}/api/countries`, {
@@ -345,13 +384,7 @@ function CreateNewProject() {
                 )}
               </div>
               <div className="mt-3 flex gap-[2%]">
-                <DragAndDrop
-                  setState={(data) => {
-                    vectorSource.current.clear();
-                    setGeojsonObject(data);
-                  }}
-                  setDragedFile={(data) => setDragedFile(data)}
-                >
+                <DragAndDrop setDragedFile={setDragedFile}>
                   <Map
                     center={fromLonLat(center)}
                     zoom={zoom}
@@ -359,7 +392,7 @@ function CreateNewProject() {
                   >
                     <Layers>
                       <TileLayer source={xyzSource} zIndex={0} />
-                      {geojsonObject && (
+                      {geoFileObject && (
                         <VectorLayer source={vectorSource.current} />
                       )}
                       <VectorLayer source={drawSource.current} />
