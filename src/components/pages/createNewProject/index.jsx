@@ -124,7 +124,21 @@ function CreateNewProject() {
     if (!data.get("geo_data_file").name) {
       if (geojsonObject && dragedFile) {
         data.set("geo_data_file", dragedFile);
+      } else {
+        const drawData = drawSource.current.getFeatures();
+        if (drawData) {
+          let format = new GeoJSON();
+          let geoJsonStr = format.writeFeatures(drawData, {
+            dataProjection: "EPSG:4326",
+            featureProjection: "EPSG:3857",
+          });
+          const file = new File([geoJsonStr], `draw-${Date.now()}.geojson`, {
+            type: "text/plain",
+          });
+          data.set("geo_data_file", file);
+        }
       }
+      console.log(...data);
     }
     fetch(`${BASE_URL}/project`, {
       method: "POST",
