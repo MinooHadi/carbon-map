@@ -121,9 +121,9 @@ function CreateNewProject() {
 
   function createProject() {
     const data = new FormData(formRef.current);
-    if (!data.get("geo_data_file")) {
+    if (!data.get("geo_data_file").name) {
       if (geojsonObject && dragedFile) {
-        data.set("geo_data_file_2", dragedFile, dragedFile.name);
+        data.set("geo_data_file", dragedFile);
       }
     }
     fetch(`${BASE_URL}/project`, {
