@@ -33,7 +33,7 @@ function Login() {
     if (isAuthenticate) {
       navigate("/projects");
     }
-  }, []);
+  }, [isAuthenticate]);
 
   return (
     <>
