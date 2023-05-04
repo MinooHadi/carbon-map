@@ -12,3 +12,4 @@ export { default as DrawItem } from "./drawItem/index";
 export { default as DragAndDrop } from "./drag-drop/index";
 export { default as Modal } from "./modal/index";
 export { default as useCheckLogin } from "./customCheckerHook/index";
+export { default as Auth } from "./auth/index";

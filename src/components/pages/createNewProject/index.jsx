@@ -1,5 +1,6 @@
 import React, { useContext, useEffect, useMemo, useRef, useState } from "react";
 import {
+  Auth,
   Button,
   Contorols,
   DragAndDrop,
@@ -12,6 +13,7 @@ import {
   Modal,
   TileLayer,
   VectorLayer,
+  useCheckLogin,
 } from "../../shared";
 import { fromLonLat, transform } from "ol/proj";
 import xyz from "../../../Source/xyz";
@@ -57,8 +59,6 @@ function CreateNewProject() {
       maxZoom: 20,
     });
   }, []);
-
-  useEffect(() => {}, [dragedFile]);
 
   useEffect(() => {
     if (!geoFileObject) return;
@@ -237,53 +237,58 @@ function CreateNewProject() {
   }, [selectedCountry]);
 
   return (
-    <div className="h-[100vh] ">
-      <Header />
-      <div className="bg-gray-50 h-[90vh] ">
-        <div className="w-[80%] h-[10vh] m-auto py-6 flex justify-between items-center mb-2">
-          <h1 className="text-xl font-semibold">New projects</h1>
-          <div className="flex gap-3">
-            <Button
-              className="bg-gray-300 font-semibold py-1 px-3 rounded-md"
-              title="Cancle"
-            />
-            <Button
-              className="bg-emerald-400 text-white font-semibold py-1 px-3 rounded-md"
-              title="Create project"
-              onClick={createProject}
-            />
+    <Auth>
+      {" "}
+      <div className="h-[100vh] ">
+        <Header />
+        <div className="bg-gray-50 h-[90vh] ">
+          <div className="w-[80%] h-[10vh] m-auto py-6 flex justify-between items-center mb-2">
+            <h1 className="text-xl font-semibold">New projects</h1>
+            <div className="flex gap-3">
+              <Button
+                className="bg-gray-300 font-semibold py-1 px-3 rounded-md"
+                title="Cancle"
+              />
+              <Button
+                className="bg-emerald-400 text-white font-semibold py-1 px-3 rounded-md"
+                title="Create project"
+                onClick={createProject}
+              />
+            </div>
           </div>
-        </div>
-        <div className="w-[80%] h-[75vh] m-auto flex flex-wrap gap-[2%] pb-12 ">
-          <div className="w-[28%] bg-white shadow-lg rounded-lg">
-            <form id="form" ref={formRef}>
-              <div className="bg-gray-200 h-52 rounded-t-lg flex flex-col justify-center items-center">
-                <input type="file" id="imgUpload" hidden name="thumbnail" />
-                <Upload color="white" size="1.5rem" />
-                <label htmlFor="imgUpload" className="text-white font-semibold">
-                  Upload image
-                </label>
-              </div>
-              <div className="p-[2%]">
-                <Input
-                  name="name"
-                  lable="Name"
-                  type="text"
-                  className="border-2 border-gray-300 px-1 rounded-md mb-4"
-                  placeholder="Project name"
-                />
-                <label className="text-sm font-medium text-gray-500">
-                  Description
-                </label>
-                <textarea
-                  name="description"
-                  className="border-2 border-gray-300 rounded-md w-[100%] px-1 mt-1 "
-                  placeholder="Short description"
-                />
-              </div>
-            </form>
+          <div className="w-[80%] h-[75vh] m-auto flex flex-wrap gap-[2%] pb-12 ">
+            <div className="w-[28%] bg-white shadow-lg rounded-lg">
+              <form id="form" ref={formRef}>
+                <div className="bg-gray-200 h-52 rounded-t-lg flex flex-col justify-center items-center">
+                  <input type="file" id="imgUpload" hidden name="thumbnail" />
+                  <Upload color="white" size="1.5rem" />
+                  <label
+                    htmlFor="imgUpload"
+                    className="text-white font-semibold"
+                  >
+                    Upload image
+                  </label>
+                </div>
+                <div className="p-[2%]">
+                  <Input
+                    name="name"
+                    lable="Name"
+                    type="text"
+                    className="border-2 border-gray-300 px-1 rounded-md mb-4"
+                    placeholder="Project name"
+                  />
+                  <label className="text-sm font-medium text-gray-500">
+                    Description
+                  </label>
+                  <textarea
+                    name="description"
+                    className="border-2 border-gray-300 rounded-md w-[100%] px-1 mt-1 "
+                    placeholder="Short description"
+                  />
+                </div>
+              </form>
 
-            {/* <div className="mt-3">
+              {/* <div className="mt-3">
                 <h1 className="font-semibold text-lg mb-2">Users</h1>
                 <div className="flex flex-col">
                   <label className="text-sm font-medium text-gray-500 mb-1">
@@ -296,127 +301,128 @@ function CreateNewProject() {
                   </select>
                 </div>
               </div> */}
-          </div>
-          <div className="w-[70%] bg-white p-5 shadow-lg rounded-lg">
-            <h1 className="text-lg font-semibold">Province</h1>
-            <div className="flex flex-col mt-1">
-              <label className="text-sm font-medium text-gray-500 mb-1">
-                Choose country
-              </label>
-              <select
-                className="border-2 border-gray-300 px-1 rounded-md mb-2"
-                form="form"
-                name="country"
-                onChange={(e) => setSelectedCountry(e.target.value)}
-              >
-                <option value=""></option>
-                {country.map((item) => (
-                  <option value={item.code}> {item.name} </option>
-                ))}
-              </select>
-              <label className="text-sm font-medium text-gray-500 mb-1">
-                Choose the most accurate address
-              </label>
-              <select
-                className="border-2 border-gray-300 px-1 rounded-md mb-2"
-                form="form"
-                name="province"
-                onChange={addressSelected}
-              >
-                <option value=""></option>
-                {Object.entries(addresses).map((item) => (
-                  <option value={item[1]}>{item[0]}</option>
-                ))}
-              </select>
-              <h1 className="text-lg font-semibold">Data</h1>
-              <div className="mt-1 flex items-center">
-                <input
-                  type="file"
-                  id="upload"
-                  hidden
-                  onChange={getFile}
-                  form="form"
-                  name="geo_data_file"
-                />
-                <label
-                  htmlFor="upload"
-                  className="bg-gray-300 font-semibold text-sm py-1 px-3 rounded-l-md"
-                >
-                  Upload
+            </div>
+            <div className="w-[70%] bg-white p-5 shadow-lg rounded-lg">
+              <h1 className="text-lg font-semibold">Province</h1>
+              <div className="flex flex-col mt-1">
+                <label className="text-sm font-medium text-gray-500 mb-1">
+                  Choose country
                 </label>
-                <Button
-                  title="Draw"
-                  className="bg-emerald-400 text-white font-semibold py-1 px-3 text-sm rounded-r-md"
-                  onClick={() => setShowToolbar(!showToolbar)}
-                />
-                {showToolbar && (
-                  <div className="flex ml-5 gap-2">
-                    <div
-                      className="w-7 h-7 bg-gray-300 rounded-md flex justify-center items-center"
-                      data-type="Polygon"
-                      onClick={draw}
-                    >
-                      <ShapePolygon />
-                    </div>
-                    <div
-                      className="w-7 h-7 bg-gray-300 rounded-md flex justify-center items-center"
-                      data-type="LineString"
-                      onClick={draw}
-                    >
-                      <OutlinePolyline />
-                    </div>
-                    <div
-                      className="w-7 h-7 bg-gray-300 rounded-md flex justify-center items-center"
-                      data-type="Point"
-                      onClick={draw}
-                    >
-                      <OutlineLocationMarker />
-                    </div>
-                    <div
-                      className="w-7 h-7 bg-gray-300 rounded-md flex justify-center items-center"
-                      onClick={() => map.removeInteraction(drawObj.current)}
-                    >
-                      <MousePointer
-                        onClick={() => map.removeInteraction(drawObj.current)}
-                      />
-                    </div>
-                  </div>
-                )}
-              </div>
-              <div className="mt-3 flex gap-[2%]">
-                <DragAndDrop setDragedFile={setDragedFile}>
-                  <Map
-                    center={fromLonLat(center)}
-                    zoom={zoom}
-                    className="w-[100%] h-[100%] "
-                  >
-                    <Layers>
-                      <TileLayer source={xyzSource} zIndex={0} />
-                      {geoFileObject && (
-                        <VectorLayer source={vectorSource.current} />
-                      )}
-                      <VectorLayer source={drawSource.current} />
-                    </Layers>
-                    <Contorols>
-                      <FullScreenControl />
-                    </Contorols>
-                  </Map>
-                </DragAndDrop>
-                <div className="w-[33%] max-h-72 overflow-y-scroll no-scrollbar">
-                  {Object.entries(labels).map((item) => (
-                    <DrawItem
-                      title={item[1]}
-                      dataId={item[0]}
-                      onClick={deleteItem}
-                    />
+                <select
+                  className="border-2 border-gray-300 px-1 rounded-md mb-2"
+                  form="form"
+                  name="country"
+                  onChange={(e) => setSelectedCountry(e.target.value)}
+                >
+                  <option value=""></option>
+                  {country.map((item) => (
+                    <option value={item.code}> {item.name} </option>
                   ))}
+                </select>
+                <label className="text-sm font-medium text-gray-500 mb-1">
+                  Choose the most accurate address
+                </label>
+                <select
+                  className="border-2 border-gray-300 px-1 rounded-md mb-2"
+                  form="form"
+                  name="province"
+                  onChange={addressSelected}
+                >
+                  <option value=""></option>
+                  {Object.entries(addresses).map((item) => (
+                    <option value={item[1]}>{item[0]}</option>
+                  ))}
+                </select>
+                <h1 className="text-lg font-semibold">Data</h1>
+                <div className="mt-1 flex items-center">
+                  <input
+                    type="file"
+                    id="upload"
+                    hidden
+                    onChange={getFile}
+                    form="form"
+                    name="geo_data_file"
+                  />
+                  <label
+                    htmlFor="upload"
+                    className="bg-gray-300 font-semibold text-sm py-1 px-3 rounded-l-md"
+                  >
+                    Upload
+                  </label>
+                  <Button
+                    title="Draw"
+                    className="bg-emerald-400 text-white font-semibold py-1 px-3 text-sm rounded-r-md"
+                    onClick={() => setShowToolbar(!showToolbar)}
+                  />
+                  {showToolbar && (
+                    <div className="flex ml-5 gap-2">
+                      <div
+                        className="w-7 h-7 bg-gray-300 rounded-md flex justify-center items-center"
+                        data-type="Polygon"
+                        onClick={draw}
+                      >
+                        <ShapePolygon />
+                      </div>
+                      <div
+                        className="w-7 h-7 bg-gray-300 rounded-md flex justify-center items-center"
+                        data-type="LineString"
+                        onClick={draw}
+                      >
+                        <OutlinePolyline />
+                      </div>
+                      <div
+                        className="w-7 h-7 bg-gray-300 rounded-md flex justify-center items-center"
+                        data-type="Point"
+                        onClick={draw}
+                      >
+                        <OutlineLocationMarker />
+                      </div>
+                      <div
+                        className="w-7 h-7 bg-gray-300 rounded-md flex justify-center items-center"
+                        onClick={() => map.removeInteraction(drawObj.current)}
+                      >
+                        <MousePointer
+                          onClick={() => map.removeInteraction(drawObj.current)}
+                        />
+                      </div>
+                    </div>
+                  )}
+                </div>
+                <div className="mt-3 flex gap-[2%]">
+                  <DragAndDrop setDragedFile={setDragedFile}>
+                    <Map
+                      center={fromLonLat(center)}
+                      zoom={zoom}
+                      className="w-[100%] h-[100%] "
+                    >
+                      <Layers>
+                        <TileLayer source={xyzSource} zIndex={0} />
+                        {geoFileObject && (
+                          <VectorLayer source={vectorSource.current} />
+                        )}
+                        <VectorLayer source={drawSource.current} />
+                      </Layers>
+                      <Contorols>
+                        <FullScreenControl />
+                      </Contorols>
+                    </Map>
+                  </DragAndDrop>
+                  <div className="w-[33%] max-h-72 overflow-y-scroll no-scrollbar">
+                    {Object.entries(labels).map((item) => (
+                      <DrawItem
+                        title={item[1]}
+                        dataId={item[0]}
+                        onClick={deleteItem}
+                      />
+                    ))}
+                  </div>
                 </div>
               </div>
             </div>
           </div>
         </div>
       </div>
-    </div>
+    </Auth>
   );
 }
 
