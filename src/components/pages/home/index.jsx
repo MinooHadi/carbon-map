@@ -5,6 +5,7 @@ import {
   Layers,
   Map,
   TileLayer,
+  useCheckLogin,
 } from "../../shared";
 import { fromLonLat } from "ol/proj";
 import xyz from "../../../Source/xyz";
@@ -13,9 +14,10 @@ import { UserAlt } from "../../icons";
 import { useNavigate } from "react-router-dom";
 
 function Home() {
-  const navigate = useNavigate()
+  const navigate = useNavigate();
   const [center, setCenter] = useState([-100.9065, 57.9884]);
   const [zoom, setZoom] = useState(5);
+  const isAuthenticate = useCheckLogin();
 
   return (
     <div>
@@ -26,8 +28,19 @@ function Home() {
             <span className="text-emerald-500">C-Carbon</span> Map
           </h1>
         </div>
-        <div className="px-2 py-2 bg-emerald-400 rounded-lg">
-          <UserAlt size="1.5rem" color="white" onClick={() => navigate("/login")} />
+        <div
+          className="px-2 py-2 bg-emerald-400 rounded-lg"
+          onClick={() => {
+            if (isAuthenticate) {
+              navigate("/projects");
+            } else if (isAuthenticate === undefined) {
+              alert("try later");
+            } else {
+              navigate("/login");
+            }
+          }}
+        >
+          <UserAlt size="1.5rem" color="white" />
         </div>
       </div>
       <Map
