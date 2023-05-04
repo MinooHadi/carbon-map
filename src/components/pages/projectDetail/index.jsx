@@ -1,6 +1,7 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import {
+  Auth,
   Button,
   Contorols,
   FullScreenControl,
@@ -76,61 +77,63 @@ function ProjectDetailPage() {
   }
 
   return (
-    <div className=" h-[100vh] ">
-      <Header />
-      <div className="bg-gray-50 h-[90vh] ">
-        <div className="w-[80%] h-[10vh] m-auto py-6 flex justify-between items-center mb-2">
-          <h1 className="text-xl font-semibold"> {detail.name} </h1>
-          <div className="flex gap-3">
-            <Button
-              className="bg-red-500 text-white font-semibold py-1 px-3 rounded-md"
-              title="Delete project"
-              onClick={deleteProject}
-            />
-            <Button
-              className="bg-emerald-400 text-white font-semibold py-1 px-3 rounded-md"
-              title="Report"
-              onClick={() => navigate(`/query?pid=${params.id}`)}
-            />
-          </div>
-        </div>
-        <div className="w-[80%] h-[75vh] m-auto flex flex-wrap gap-[2%] pb-12 ">
-          <div className="w-[28%] bg-white shadow-lg rounded-lg">
-            <div className="bg-gray-200 h-52 rounded-t-lg flex flex-col justify-center items-center">
-              {detail.thumbnail && (
-                <img
-                  src={`${BASE_URL}/${detail.thumbnail}`}
-                  className="w-[100%] h-[100%] object-cover rounded-t-lg"
-                />
-              )}
-            </div>
-            <div className="p-[2%]">
-              <label className="text-sm font-medium text-gray-500">
-                Description
-              </label>
-              <p>{detail.description && detail.description}</p>
+    <Auth>
+      <div className=" h-[100vh] ">
+        <Header />
+        <div className="bg-gray-50 h-[90vh] ">
+          <div className="w-[80%] h-[10vh] m-auto py-6 flex justify-between items-center mb-2">
+            <h1 className="text-xl font-semibold"> {detail.name} </h1>
+            <div className="flex gap-3">
+              <Button
+                className="bg-red-500 text-white font-semibold py-1 px-3 rounded-md"
+                title="Delete project"
+                onClick={deleteProject}
+              />
+              <Button
+                className="bg-emerald-400 text-white font-semibold py-1 px-3 rounded-md"
+                title="Report"
+                onClick={() => navigate(`/query?pid=${params.id}`)}
+              />
             </div>
           </div>
-          <div className="w-[70%] bg-white p-5 shadow-lg rounded-lg">
-            <Map
-              center={fromLonLat(center)}
-              zoom={zoom}
-              className="w-[100%] h-[100%] "
-            >
-              <Layers>
-                <TileLayer source={xyzSource} zIndex={0} />
-                {detail.geo_data_file && (
-                  <VectorLayer source={vectorSourceRef.current} />
+          <div className="w-[80%] h-[75vh] m-auto flex flex-wrap gap-[2%] pb-12 ">
+            <div className="w-[28%] bg-white shadow-lg rounded-lg">
+              <div className="bg-gray-200 h-52 rounded-t-lg flex flex-col justify-center items-center">
+                {detail.thumbnail && (
+                  <img
+                    src={`${BASE_URL}/${detail.thumbnail}`}
+                    className="w-[100%] h-[100%] object-cover rounded-t-lg"
+                  />
                 )}
-              </Layers>
-              <Contorols>
-                <FullScreenControl />
-              </Contorols>
-            </Map>
+              </div>
+              <div className="p-[2%]">
+                <label className="text-sm font-medium text-gray-500">
+                  Description
+                </label>
+                <p>{detail.description && detail.description}</p>
+              </div>
+            </div>
+            <div className="w-[70%] bg-white p-5 shadow-lg rounded-lg">
+              <Map
+                center={fromLonLat(center)}
+                zoom={zoom}
+                className="w-[100%] h-[100%] "
+              >
+                <Layers>
+                  <TileLayer source={xyzSource} zIndex={0} />
+                  {detail.geo_data_file && (
+                    <VectorLayer source={vectorSourceRef.current} />
+                  )}
+                </Layers>
+                <Contorols>
+                  <FullScreenControl />
+                </Contorols>
+              </Map>
+            </div>
           </div>
         </div>
       </div>
-    </div>
+    </Auth>
   );
 }
 
