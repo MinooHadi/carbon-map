@@ -1,5 +1,6 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import {
+  Auth,
   Contorols,
   FullScreenControl,
   Layers,
@@ -64,32 +65,35 @@ function ProjectReport() {
   }, [detail]);
 
   return (
-    <div className="relative">
-      <Map
-        center={fromLonLat(center)}
-        zoom={zoom}
-        className="w-[100vw] h-[100vh]"
-      >
-        <Layers>
-          <TileLayer source={xyzSource} zIndex={0} />
-          {detail.geo_data_file && (
-            <VectorLayer source={vectorSourceRef.current} />
-          )}
-        </Layers>
-        <Contorols>
-          <FullScreenControl />
-        </Contorols>
-      </Map>
-      {!showModal && (
-        <div
-          className="absolute bottom-3 right-3 px-2 py-2 bg-emerald-400 rounded-lg"
-          onClick={() => setShowModal(true)}
+    <Auth>
+      {" "}
+      <div className="relative">
+        <Map
+          center={fromLonLat(center)}
+          zoom={zoom}
+          className="w-[100vw] h-[100vh]"
         >
-          <OutlineArrowsExpand size="1.5rem" color="white" />
-        </div>
-      )}
-      {showModal && <Modal setShowModal={setShowModal} />}
-    </div>
+          <Layers>
+            <TileLayer source={xyzSource} zIndex={0} />
+            {detail.geo_data_file && (
+              <VectorLayer source={vectorSourceRef.current} />
+            )}
+          </Layers>
+          <Contorols>
+            <FullScreenControl />
+          </Contorols>
+        </Map>
+        {!showModal && (
+          <div
+            className="absolute bottom-3 right-3 px-2 py-2 bg-emerald-400 rounded-lg"
+            onClick={() => setShowModal(true)}
+          >
+            <OutlineArrowsExpand size="1.5rem" color="white" />
+          </div>
+        )}
+        {showModal && <Modal setShowModal={setShowModal} />}
+      </div>
+    </Auth>
   );
 }
 
