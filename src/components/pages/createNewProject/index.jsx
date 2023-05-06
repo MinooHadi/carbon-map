@@ -10,10 +10,8 @@ import {
   Input,
   Layers,
   Map,
-  Modal,
   TileLayer,
   VectorLayer,
-  useCheckLogin,
 } from "../../shared";
 import { fromLonLat, transform } from "ol/proj";
 import xyz from "../../../Source/xyz";
@@ -32,6 +30,8 @@ import { Vector as VectorSource } from "ol/source";
 import { getCenter } from "ol/extent";
 import { BASE_URL } from "../../../api";
 import { useNavigate } from "react-router-dom";
+import { shapefileTogeojson } from "../../../utils";
+
 
 function CreateNewProject() {
   const navigate = useNavigate();
@@ -53,6 +53,9 @@ function CreateNewProject() {
   const [dragedFile, setDragedFile] = useState();
   const formRef = useRef();
 
+  const countrySelectRef = useRef();
+  const provinceSelectRef = useRef();
+
   const xyzSource = useMemo(() => {
     return xyz({
       url: "http://mt0.google.com/vt/lyrs=m&hl=en&x={x}&y={y}&z={z}",
@@ -72,37 +75,58 @@ function CreateNewProject() {
     setCenter(transform(polygonCenter, "EPSG:3857", "EPSG:4326"));
   }, [geoFileObject]);
 
-  async function getFile(e) {
-    const fileFormatList = e.target.files[0].name.split(".");
-    const fileFormat = fileFormatList[fileFormatList.length - 1].toLowerCase();
+
+  async function processFile(file) {
+    const fileFormat = file.name.split(".").pop();
+
+    let data;
+    let format;
+
     switch (fileFormat) {
-      case "geojson": {
-        const data = await e.target.files[0].text();
-        vectorSource.current.clear();
-        setGeoFileObject({ data: JSON.parse(data), format: GeoJSON });
-        return;
-      }
-      case "kml": {
-        const data = await e.target.files[0].text();
-        vectorSource.current.clear();
-        setGeoFileObject({ data: data, format: KML });
-        return;
-      }
+      case "geojson":
+        data = JSON.parse(await file.text());
+        format = GeoJSON;    
+        break;
+      case "kml":
+        data = await file.text();
+        format = KML;
+        break;
+      case "zip":
+      case "shp":
+        try {
+          data = await shapefileTogeojson(file);
+          format = GeoJSON;
+          break;
+        } catch(err) {
+          alert(err.message);
+          return
+        }
+      default:
+        alert('Unsupported geo data file!');
+        return
     }
-    // e.target.files[0].text().then((data) => {
-    //   vectorSource.current.clear();
-    //   setGeoFileObject(JSON.parse(data));
-    // });
+    
+    vectorSource.current.clear();
+    countrySelectRef.current.selectedIndex = 0;
+    provinceSelectRef.current.selectedIndex = 0;
+
+    setSelectedCountry();
+    setGeoFileObject({ data, format});
+  }
+
+  async function getFile(e) {
+    await processFile(e.target.files[0]);
   }
 
   async function addressSelected(e) {
     try {
       const res = await fetch(`${BASE_URL}/${e.target.value}`, {
         method: "GET",
+        credentials: 'include'
       });
       if (res.status === 200) {
         vectorSource.current.clear();
-        setGeoFileObject(await res.json());
+        setGeoFileObject({ data: await res.json(), format: GeoJSON });
       }
     } catch (err) {
       alert(err);
@@ -138,40 +162,21 @@ function CreateNewProject() {
   }, [state]);
 
   useEffect(() => {
-    async function fn() {
-      if (dragedFile) {
-        const fileFormatList = dragedFile.name.split(".");
-        const fileFormat =
-          fileFormatList[fileFormatList.length - 1].toLowerCase();
-        switch (fileFormat) {
-          case "geojson": {
-            const data = await dragedFile.text();
-            vectorSource.current.clear();
-            setGeoFileObject({ data: JSON.parse(data), format: GeoJSON });
-            return;
-          }
-          case "kml": {
-            const data = await dragedFile.text();
-            vectorSource.current.clear();
-            setGeoFileObject({ data: data, format: KML });
-            return;
-          }
-        }
-      }
-    }
-    fn();
+    if(dragedFile) processFile(dragedFile);
   }, [dragedFile]);
 
   function createProject() {
     const data = new FormData(formRef.current);
+
     if (!data.get("geo_data_file").name) {
-      if (geoFileObject && dragedFile) {
+      if (dragedFile && geoFileObject) {
         data.set("geo_data_file", dragedFile);
       } else {
         const drawData = drawSource.current.getFeatures();
+
         if (drawData) {
-          let format = new GeoJSON();
-          let geoJsonStr = format.writeFeatures(drawData, {
+          const format = new GeoJSON();
+          const geoJsonStr = format.writeFeatures(drawData, {
             dataProjection: "EPSG:4326",
             featureProjection: "EPSG:3857",
           });
@@ -181,7 +186,6 @@ function CreateNewProject() {
           data.set("geo_data_file", file);
         }
       }
-      console.log(...data);
     }
     fetch(`${BASE_URL}/project`, {
       method: "POST",
@@ -313,10 +317,11 @@ function CreateNewProject() {
                   form="form"
                   name="country"
                   onChange={(e) => setSelectedCountry(e.target.value)}
+                  ref={countrySelectRef}
                 >
                   <option value=""></option>
-                  {country.map((item) => (
-                    <option value={item.code}> {item.name} </option>
+                  {country.map((item, i) => (
+                    <option value={item.code} key={i}> {item.name} </option>
                   ))}
                 </select>
                 <label className="text-sm font-medium text-gray-500 mb-1">
@@ -327,10 +332,11 @@ function CreateNewProject() {
                   form="form"
                   name="province"
                   onChange={addressSelected}
+                  ref={provinceSelectRef}
                 >
                   <option value=""></option>
-                  {Object.entries(addresses).map((item) => (
-                    <option value={item[1]}>{item[0]}</option>
+                  {Object.entries(addresses).map((item, i) => (
+                    <option value={item[1]} key={i}>{item[0]}</option>
                   ))}
                 </select>
                 <h1 className="text-lg font-semibold">Data</h1>
@@ -408,11 +414,12 @@ function CreateNewProject() {
                     </Map>
                   </DragAndDrop>
                   <div className="w-[33%] max-h-72 overflow-y-scroll no-scrollbar">
-                    {Object.entries(labels).map((item) => (
+                    {Object.entries(labels).map((item, i) => (
                       <DrawItem
                         title={item[1]}
                         dataId={item[0]}
                         onClick={deleteItem}
+                        key={i}
                       />
                     ))}
                   </div>

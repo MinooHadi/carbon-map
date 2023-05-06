@@ -9,7 +9,7 @@ function Projects() {
   const [projectsList, setProjectsList] = useState([]);
 
   useEffect(() => {
-    fetch(`${BASE_URL}/api/projects`, { method: "GET" })
+    fetch(`${BASE_URL}/api/projects`, { method: "GET", credentials: 'include' })
       .then((res) => res.json())
       .then((data) => setProjectsList(data));
   }, []);

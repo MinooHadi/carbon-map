@@ -13,11 +13,10 @@ import {
   VectorLayer,
 } from "../../shared";
 import xyz from "../../../Source/xyz";
-import { fromLonLat, transform } from "ol/proj";
-import GeoJSON from "ol/format/GeoJSON";
+import { fromLonLat } from "ol/proj";
 import VectorSource from "ol/source/Vector";
-import { getCenter } from "ol/extent";
 import { BASE_URL } from "../../../api";
+import { loadFromUrl } from "../../../utils";
 
 function ProjectDetailPage() {
   const navigate = useNavigate();
@@ -30,6 +29,7 @@ function ProjectDetailPage() {
   useEffect(() => {
     fetch(`${BASE_URL}/api/projects/${params.id}`, {
       method: "GET",
+      credentials: 'include'
     })
       .then((res) => res.json())
       .then((data) => setDetail(data));
@@ -43,26 +43,16 @@ function ProjectDetailPage() {
   }, []);
 
   useEffect(() => {
-    if (detail.geo_data_file) {
-      fetch(`${BASE_URL}/${detail.geo_data_file}`, {
-        method: "GET",
-      })
-        .then((res) => {
-          if (res.status === 200) {
-            return res.json();
-          }
-        })
-        .then((data) => {
-          vectorSourceRef.current.addFeatures(
-            new GeoJSON({
-              featureProjection: "EPSG:3857",
-            }).readFeatures(data)
-          );
-          let polygonCenter = getCenter(vectorSourceRef.current.getExtent());
-          setCenter(transform(polygonCenter, "EPSG:3857", "EPSG:4326"));
-        });
-      setZoom(4);
+    async function load() {
+      try {
+        await loadFromUrl(`${BASE_URL}/${detail.geo_data_file}`, vectorSourceRef.current, setCenter);
+        setZoom(4);
+      } catch(err) {
+        alert(err.message);
+      }
     }
+
+    if (detail.geo_data_file) load();
   }, [detail]);
 
   function deleteProject() {
