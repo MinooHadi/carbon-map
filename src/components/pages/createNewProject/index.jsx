@@ -219,7 +219,7 @@ function CreateNewProject() {
 
   useEffect(() => {
     if (selectedCountry) {
-      fetch(`${BASE_URL}/api/geo-data/`, {
+      fetch(`${BASE_URL}/api/geodata/`, {
         method: "POST",
         body: JSON.stringify({
           country: selectedCountry,
