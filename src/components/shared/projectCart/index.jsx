@@ -1,5 +1,5 @@
 import React from "react";
-import flag from "./../../../assets/image/download.png";
+import flag from "./../../../assets/image/ca.png";
 import { BASE_URL } from "../../../api";
 
 function ProjectCart(props) {
@@ -24,7 +24,7 @@ function ProjectCart(props) {
           <p> {props.createdAt} </p>
           <div className="flex justify-end items-center gap-2">
             <img src={flag} className="w-6 h-fit" />
-            <p>Germany</p>
+            <p>Canada</p>
           </div>
         </div>
       </div>
