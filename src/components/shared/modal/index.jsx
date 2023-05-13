@@ -15,7 +15,7 @@ function Modal(props) {
       method: "GET",
       credentials: 'include'
     }).then(res => {
-      if(res.status = 200) {
+      if(res.status == 200) {
         return res.json();
       }
       return res.json().then((err) => {
