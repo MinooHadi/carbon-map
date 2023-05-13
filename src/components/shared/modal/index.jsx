@@ -1,12 +1,30 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import ReactDOM from "react-dom";
 import { FileDownload, FormClose } from "../../icons";
 import Button from "../button";
 import { useNavigate } from "react-router-dom";
 import Input from "../input";
+import { BASE_URL } from "../../../api";
 
 function Modal(props) {
   const navigate = useNavigate();
+  const [indicators, setIndicators] = useState([]);
+
+  useEffect(() => {
+    fetch(`${BASE_URL}/api/indicator`, {
+      method: "GET",
+      credentials: 'include'
+    }).then(res => {
+      if(res.status = 200) {
+        return res.json();
+      }
+      return res.json().then((err) => {
+        throw new Error(err.detail);
+      });
+    }).then(data => {
+      setIndicators(data);
+    }).catch(err => alert(err.message));
+  });
 
   return ReactDOM.createPortal(
     <div className="absolute bottom-0 h-[300px] w-[100%] rounded-t-3xl bg-white p-5">
@@ -17,8 +35,9 @@ function Modal(props) {
         <div className="flex justify-between w-[80%] mt-2 ">
           <select name="" id="" className="border-2 w-1/4 px-1 ">
             <option value="">Choose Indicator</option>
-            <option value="Biomass">Biomass</option>
-            <option value="NDVI">NDVI</option>
+            {
+              indicators.map((item, i) => <option value={item.type} key={i} data-id={item.id}>{item.name}</option>)
+            }
           </select>
           <Input
             lable="Start Date:"
