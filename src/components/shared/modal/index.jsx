@@ -24,7 +24,7 @@ function Modal(props) {
     }).then(data => {
       setIndicators(data);
     }).catch(err => alert(err.message));
-  });
+  }, []);
 
   return ReactDOM.createPortal(
     <div className="absolute bottom-0 h-[300px] w-[100%] rounded-t-3xl bg-white p-5">
