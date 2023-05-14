@@ -56,6 +56,16 @@ function CreateNewProject() {
   const countrySelectRef = useRef();
   const provinceSelectRef = useRef();
 
+  useEffect(() => {
+    return () => {
+      if (map) {
+        map.removeInteraction(drawObj.current);
+        map.removeInteraction(drawSource.current);
+        map.removeInteraction(vectorSource.current);
+      }
+    };
+  }, []);
+
   const xyzSource = useMemo(() => {
     return xyz({
       url: "http://mt0.google.com/vt/lyrs=m&hl=en&x={x}&y={y}&z={z}",
@@ -69,10 +79,12 @@ function CreateNewProject() {
     vectorSource.current.addFeatures(
       new geoFileObject.format({
         featureProjection: "EPSG:3857",
+        dataProjection: 'EPSG:4326'
       }).readFeatures(geoFileObject.data)
     );
     let polygonCenter = getCenter(vectorSource.current.getExtent());
     setCenter(transform(polygonCenter, "EPSG:3857", "EPSG:4326"));
+    setZoom(4);
   }, [geoFileObject]);
 
 
