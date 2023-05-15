@@ -18,7 +18,7 @@ function GateWay() {
         <Route path="/projects" element={<Projects />} />
         <Route path="/create" element={<CreateNewProject />} />
         <Route path="/detail/:id" element={<ProjectDetailPage />} />
-        <Route path="/query" element={<ProjectReport />} />
+        <Route path="/report" element={<ProjectReport />} />
       </Routes>
     </BrowserRouter>
   );
