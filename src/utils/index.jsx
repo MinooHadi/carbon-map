@@ -1,6 +1,4 @@
 import { GeoJSON, KML } from "ol/format";
-import { getCenter, } from "ol/extent";
-import { transform } from "ol/proj";
 import { BASE_URL } from "../api";
 
 
@@ -28,7 +26,7 @@ export async function shapefileTogeojson(source, remote=false) {
 }
 
 
-export async function loadFromUrl(url, layerSource, setCenter) {
+export async function loadFromUrl(url, layerSource) {
     let data;
     let format;
     let ext = url.split('.').pop();
@@ -66,7 +64,4 @@ export async function loadFromUrl(url, layerSource, setCenter) {
         featureProjection: "EPSG:3857",
       }).readFeatures(data)
     );
-
-    const polygonCenter = getCenter(layerSource.getExtent());
-    setCenter(transform(polygonCenter, "EPSG:3857", "EPSG:4326"));
 }
