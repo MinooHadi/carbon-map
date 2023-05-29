@@ -18,7 +18,7 @@ function Projects() {
     <Auth>
       <div>
         <Header />
-        <div className="bg-gray-50">
+        <div className="bg-gray-50 h-[90vh]">
           <div className="w-[80%] m-auto py-6 flex justify-between items-center mb-3">
             <h1 className="text-xl font-semibold">
               Projects{" "}

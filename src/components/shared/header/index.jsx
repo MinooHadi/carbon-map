@@ -31,13 +31,13 @@ function Header() {
       </div>
       <div className="flex items-center w-[50%] justify-end gap-24">
         <p
-          className="font-semibold text-lg hover:cursor-pointer "
+          className="font-semibold text-lg hover:cursor-pointer hover:text-slate-400"
           onClick={() => navigate("/")}
         >
           Home
         </p>
         <p
-          className="font-semibold text-lg hover:cursor-pointer "
+          className="font-semibold text-lg hover:cursor-pointer hover:text-slate-400"
           onClick={() => navigate("/projects")}
         >
           Projects
@@ -49,8 +49,10 @@ function Header() {
           <Menu size="1.2rem" />
         </div>
         {showMenu && (
-          <div className="absolute top-[8.5vh] right-4 w-32 bg-white h-16 border-2 flex flex-col items-center border-gray-300">
-            <p className="hover:cursor-pointer" onClick={logOut}>
+          <div className="absolute top-[8.5vh] right-4 w-32 bg-white h-fit border-2 flex flex-col border-gray-300 rounded-md p-2">
+            <p className="hover:cursor-pointer font-semibold hover:bg-slate-200 p-1">Profile</p>
+            <p className="hover:cursor-pointer font-semibold hover:bg-slate-200 p-1">Settings</p>
+            <p className="hover:cursor-pointer font-semibold hover:bg-slate-200 p-1" onClick={logOut}>
               Log Out
             </p>
           </div>
