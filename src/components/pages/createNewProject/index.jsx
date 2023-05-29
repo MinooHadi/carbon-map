@@ -413,7 +413,7 @@ function CreateNewProject() {
                       </Contorols>
                     </Map>
                   </DragAndDrop>
-                  <div className="w-[33%] max-h-72 overflow-y-scroll no-scrollbar">
+                  <div className="w-[18%] max-h-72 overflow-y-scroll no-scrollbar">
                     {Object.entries(labels).map((item, i) => (
                       <DrawItem
                         title={item[1]}

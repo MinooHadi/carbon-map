@@ -24,7 +24,7 @@ function DragAndDrop(props) {
 
   return (
     <div
-      className="w-[65%] h-72 border-2"
+      className="w-[80%] h-72 border-2"
       onDrop={(e) => handleDrop(e)}
       onDragOver={(e) => handleDragOver(e)}
       onDragEnter={(e) => handleDragEnter(e)}
