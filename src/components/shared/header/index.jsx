@@ -16,7 +16,7 @@ function Header() {
       if (res.status === 200) {
         navigate("/");
       } else {
-        alert("try later")
+        alert("try later");
       }
     });
   }
@@ -30,6 +30,12 @@ function Header() {
         </h1>
       </div>
       <div className="flex items-center w-[50%] justify-end gap-24">
+        <p
+          className="font-semibold text-lg hover:cursor-pointer "
+          onClick={() => navigate("/")}
+        >
+          Home
+        </p>
         <p
           className="font-semibold text-lg hover:cursor-pointer "
           onClick={() => navigate("/projects")}
