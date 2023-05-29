@@ -3,6 +3,7 @@ import {
   Auth,
   Contorols,
   FullScreenControl,
+  Header,
   Layers,
   Map,
   Modal,
@@ -56,7 +57,7 @@ function ProjectReport() {
 
   return (
     <Auth>
-      {" "}
+      <Header />
       <div className="relative">
         <Map
           center={fromLonLat(center)}
