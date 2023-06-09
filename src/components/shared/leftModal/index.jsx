@@ -7,7 +7,6 @@ import Input from "../input";
 import { BASE_URL } from "../../../api";
 
 function LeftModal(props) {
-  console.log(props.disabled);
   const navigate = useNavigate();
   const [indicators, setIndicators] = useState([]);
 

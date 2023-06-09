@@ -23,6 +23,7 @@ function ProjectDetailPage() {
   const params = useParams();
   const [detail, setDetail] = useState([]);
   const [center, setCenter] = useState([-103.9065, 56.9884]);
+  const [disabled, setDisabled] = useState(true);
   const [zoom, setZoom] = useState(5);
   const vectorSourceRef = useRef(new VectorSource());
 
@@ -32,7 +33,7 @@ function ProjectDetailPage() {
       credentials: 'include'
     })
       .then((res) => res.json())
-      .then((data) => setDetail(data));
+      .then((data) => {setDetail(data)});
   }, []);
 
   const xyzSource = useMemo(() => {
@@ -52,7 +53,10 @@ function ProjectDetailPage() {
       }
     }
 
-    if (detail.geo_data_file) load();
+    if (detail.geo_data_file) {
+      load();
+      setDisabled(false);
+    }
   }, [detail]);
 
   function deleteProject() {
@@ -80,10 +84,25 @@ function ProjectDetailPage() {
                 onClick={deleteProject}
               />
               <Button
-                className="bg-emerald-400 text-white font-semibold py-1 px-3 rounded-md"
+                className={`${disabled ? "bg-gray-300 text-gray-400" : "bg-emerald-400 text-white"} font-semibold py-1 px-3 rounded-md`}
                 title="Report"
                 onClick={() => navigate(`/query?pid=${params.id}`)}
+                disabled={disabled}
               />
+              <input
+                type="file"
+                id="upload"
+                hidden
+                onChange={}
+                form="form"
+                name="geo_data_file"
+              />
+              <label
+                htmlFor="upload"
+                className={`${disabled ? "bg-emerald-400 text-white" : "bg-gray-300 text-gray-400"} font-semibold text-sm py-1 px-3 rounded-md text-center`}
+              >
+                Upload
+              </label>
             </div>
           </div>
           <div className="w-[80%] h-[75vh] m-auto flex flex-wrap gap-[2%] pb-12 ">
